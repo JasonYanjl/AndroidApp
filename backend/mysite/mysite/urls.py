@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.urls import path, re_path
-from app import views, views_file
+from app import views, views_file, views_chat
 import re
 
 
@@ -46,5 +46,9 @@ urlpatterns = [
 
     path('api/file/upload', views_file.upload, name="Upload"),
     path('api/file/download', views_file.download, name="Download"),
+
+    # ------
+
+    path('api/chat/get', views_chat.chat_get, name="Chatget")
 
 ]

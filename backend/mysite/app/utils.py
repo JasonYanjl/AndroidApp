@@ -6,6 +6,7 @@ import jwt
 import json
 import os
 import hashlib
+import time
 
 
 def ToMd5(Str):
@@ -31,6 +32,12 @@ def DecodeJWT(token):
     salt = "jwtsalt"
     payload = jwt.decode(token, salt, algorithm=['HS256'])
     return payload
+
+
+def time2str(timeint):
+    timeint = timeint // 1000
+    return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(timeint))
+
 
 BASEPATH = os.getcwd()
 FileSavePath = os.path.join(BASEPATH, "UploadFiles")

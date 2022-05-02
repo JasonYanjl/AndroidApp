@@ -181,14 +181,19 @@ def logout(request):
 # @LoginCheck
 def hello_user(request):
     if (request.method == "GET"):
-        Token = request.META.get("HTTP_AUTHORIZATION")
-        Payload = DecodeJWT(Token)
-        username = Payload['username']
-        NowUser = models.User.objects.get(user_username=username)
-        return JsonResponse({"userid": NowUser.user_id,
-                             "username": NowUser.user_username,
-                             "avatarid": NowUser.user_avatarid,
-                             "intro": NowUser.user_intro})
+        try:
+            Token = request.META.get("HTTP_AUTHORIZATION")
+            Payload = DecodeJWT(Token)
+            username = Payload['username']
+            NowUser = models.User.objects.get(user_username=username)
+            return JsonResponse({"userid": NowUser.user_id,
+                                 "username": NowUser.user_username,
+                                 "avatarid": NowUser.user_avatarid,
+                                 "intro": NowUser.user_intro})
+        except:
+            return HttpResponse(json.dumps({"Message": "Error Params"}),
+                                content_type="application/json",
+                                status=401)
     else:
         return HttpResponse(json.dumps({"Message": "require GET"}),
                             content_type="application/json",
@@ -346,12 +351,14 @@ def unsubscribe(request):
 # @LoginCheck
 def subscribelist(request):
     if (request.method == "GET"):
-        Username = str(request.GET.get('username'))
+        Username = request.GET.get('username')
 
         if Username is None:
             return HttpResponse(json.dumps({"Message": "Require username"}),
                                 content_type="application/json",
                                 status=401)
+
+        Username = str(Username)
 
         try:
             NowUser = models.User.objects.get(user_username=Username)
@@ -435,12 +442,14 @@ def unblock(request):
 # @LoginCheck
 def blocklist(request):
     if (request.method == "GET"):
-        Username = str(request.GET.get('username'))
+        Username = request.GET.get('username')
 
         if Username is None:
             return HttpResponse(json.dumps({"Message": "Require username"}),
                                 content_type="application/json",
                                 status=401)
+
+        Username = str(Username)
 
         try:
             NowUser = models.User.objects.get(user_username=Username)
