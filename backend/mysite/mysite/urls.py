@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.urls import path, re_path
-from app import views
+from app import views, views_file
 import re
 
 
@@ -41,4 +41,10 @@ urlpatterns = [
     path('api/user/block', views.block, name="Block"),
     path('api/user/unblock', views.unblock, name="Unblock"),
     path('api/user/blocklist', views.blocklist, name="Blocklist"),
+
+    # ------
+
+    path('api/file/upload', views_file.upload, name="Upload"),
+    path('api/file/download', views_file.download, name="Download"),
+
 ]

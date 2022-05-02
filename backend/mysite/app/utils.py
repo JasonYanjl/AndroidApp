@@ -31,3 +31,8 @@ def DecodeJWT(token):
     salt = "jwtsalt"
     payload = jwt.decode(token, salt, algorithm=['HS256'])
     return payload
+
+BASEPATH = os.getcwd()
+FileSavePath = os.path.join(BASEPATH, "UploadFiles")
+if not os.path.exists(FileSavePath):
+    os.makedirs(FileSavePath)
