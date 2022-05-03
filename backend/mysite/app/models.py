@@ -82,6 +82,8 @@ class Comment(models.Model):
     comment_id = models.AutoField(primary_key=True)
     comment_user_id = models.IntegerField(default=-1)
     comment_post_id = models.IntegerField(default=-1)
+    comment_time = models.BigIntegerField(default=0)
+    comment_text = models.CharField(default='', blank=True, max_length=10240)
 
     class Meta:
         verbose_name = 'Comment'
@@ -97,6 +99,8 @@ class Post(models.Model):
     post_text = models.CharField(default='', blank=True, max_length=10240)
     post_type = models.IntegerField(default=-1)
     post_location = models.CharField(default='', blank=True, max_length=128)
+    post_cnt_like = models.IntegerField(default=0)
+    post_time = models.BigIntegerField(default=0)
 
     class Meta:
         verbose_name = 'Post'

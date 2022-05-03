@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.urls import path, re_path
-from app import views, views_file, views_chat
+from app import views, views_file, views_chat, views_discover
 import re
 
 
@@ -49,6 +49,19 @@ urlpatterns = [
 
     # ------
 
-    path('api/chat/get', views_chat.chat_get, name="Chatget")
+    path('api/chat/get', views_chat.chat_get, name="Chatget"),
+
+    # ------
+
+    path('api/discover/post', views_discover.discover_post, name="DiscoverPost"),
+    path('api/discover/like', views_discover.discover_like, name="DiscoverLike"),
+    path('api/discover/dislike', views_discover.discover_dislike, name="DiscoverDislike"),
+    path('api/discover/collectlike', views_discover.discover_collectlike, name="DiscoverCollectlike"),
+    path('api/discover/comment', views_discover.discover_comment, name="DiscoverComment"),
+    path('api/discover/cancelcomment', views_discover.discover_cancelcomment, name="DiscoverCancelcomment"),
+    path('api/discover/collectcomment', views_discover.discover_collectcomment, name="DiscoverCollectcomment"),
+    path('api/discover/get', views_discover.discover_get, name="DiscoverGet"),
+    path('api/discover/search', views_discover.discover_search, name="DiscoverSearch"),
+    path('api/discover/detail', views_discover.discover_deatil, name="DiscoverDetail"),
 
 ]
