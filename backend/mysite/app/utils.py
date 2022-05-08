@@ -24,8 +24,8 @@ def EncryptPassword(Password):
 def GenerateJWT(payload):
     salt = "jwtsalt"
     token = jwt.encode(payload, salt, algorithm="HS256")
-    # return token.decode()
-    return token
+    return token.decode()
+    # return token
 
 
 def DecodeJWT(token):

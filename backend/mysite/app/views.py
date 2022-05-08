@@ -125,22 +125,20 @@ def login(request):
             return HttpResponse(json.dumps({"Message": "Error Params"}),
                                 content_type="application/json",
                                 status=401)
-
+        
         try:
             NowUser = models.User.objects.get(user_username=Username)
             if (NowUser.user_password != EncryptPassword(Password)):
                 return HttpResponse(json.dumps({"Message": "Wrong password"}),
                                     content_type="application/json",
                                     status=400)
-
             jwt = GenerateJWT({"userid": NowUser.user_id,
                                "username": NowUser.user_username,
                                "userjwtrank": random.randint(1, 1e9)})
-
             NowUser.user_loginJwt = jwt
             NowUser.save()
-
-            return JsonResponse({"userid": NowUser.user_id,
+            return JsonResponse({"Message": "success",
+                                 "userid": NowUser.user_id,
                                  "username": NowUser.user_username,
                                  "jwt": NowUser.user_loginJwt})
 
@@ -182,10 +180,13 @@ def logout(request):
 def hello_user(request):
     if (request.method == "GET"):
         try:
-            Token = request.META.get("HTTP_AUTHORIZATION")
-            Payload = DecodeJWT(Token)
-            username = Payload['username']
-            NowUser = models.User.objects.get(user_username=username)
+            # Token = request.META.get("HTTP_AUTHORIZATION")
+            # Payload = DecodeJWT(Token)
+            # username = Payload['username']
+            userid = request.GET.get('userid')
+            userid = int(userid)
+            print(userid)
+            NowUser = models.User.objects.get(user_id=userid)
             return JsonResponse({"userid": NowUser.user_id,
                                  "username": NowUser.user_username,
                                  "avatarid": NowUser.user_avatarid,

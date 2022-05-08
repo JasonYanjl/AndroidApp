@@ -472,4 +472,3 @@ def discover_deatil(request):
         return HttpResponse(json.dumps({"Message": "require GET"}),
                             content_type="application/json",
                             status=401)
-    
