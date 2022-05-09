@@ -14,7 +14,7 @@ import java.util.List;
 
 public class FrontpageActivity extends AppCompatActivity {
 
-    private Fragment homepageFragment, relationFragment, postFragment, messageFragment, accountFragment;
+    private Fragment homepageFragment, relationFragment, postFragment, accountFragment;
 
     @BindView(R.id.navigation)
     BottomNavigationView navigationMenu;
@@ -30,7 +30,6 @@ public class FrontpageActivity extends AppCompatActivity {
         homepageFragment = HomepageFragment.newInstance();
         relationFragment = RelationFragment.newInstance();
         postFragment = PostFragment.newInstance();
-        messageFragment = MessageFragment.newInstance();
         accountFragment = AccountFragment.newInstance();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.linearlayout,homepageFragment).commit();
@@ -39,7 +38,6 @@ public class FrontpageActivity extends AppCompatActivity {
             homepageFragment = HomepageFragment.newInstance();
             relationFragment = RelationFragment.newInstance();
             postFragment = PostFragment.newInstance();
-            messageFragment = MessageFragment.newInstance();
             accountFragment = AccountFragment.newInstance();
             switch (item.getItemId()) {
                 case R.id.homepage:
@@ -50,9 +48,6 @@ public class FrontpageActivity extends AppCompatActivity {
                     return true;
                 case R.id.post:
                     getSupportFragmentManager().beginTransaction().replace(R.id.linearlayout,postFragment).commit();
-                    return true;
-                case R.id.message:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.linearlayout,messageFragment).commit();
                     return true;
                 case R.id.account:
                     getSupportFragmentManager().beginTransaction().replace(R.id.linearlayout,accountFragment).commit();
