@@ -25,6 +25,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Frontend">
         <activity
+            android:name=".MessageActivity"
+            android:exported="false"
+        />
+        <activity
             android:name=".FrontpageActivity"
             android:exported="false" />
         <activity
