@@ -39,7 +39,7 @@ public class HttpRequestManager {
     private static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");//mdiatype 这个需要和服务端保持一致
     private static final MediaType MEDIA_TYPE_MARKDOWN = MediaType.parse("text/x-markdown; charset=utf-8");//mdiatype 这个需要和服务端保持一致
     private static final String TAG = HttpRequestManager.class.getSimpleName();
-    private static final String BASE_URL = "http://10.0.2.2:8000";//请求接口根地址
+    private static final String BASE_URL = "http://43.138.54.28";//请求接口根地址
     private static final MediaType MEDIA_TYPE_IMG = MediaType.parse("image/png; charset=utf-8");
     private static volatile HttpRequestManager mInstance;//单利引用
     public static final int TYPE_GET = 0;//get请求

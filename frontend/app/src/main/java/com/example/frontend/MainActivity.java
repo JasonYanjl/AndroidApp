@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setLoginContent(){
         setContentView(R.layout.activity_main);
+        setTitle("登录");
         usernameEdit = findViewById(R.id.username);
         passwordEdit = findViewById(R.id.password);
         login = findViewById(R.id.login);
