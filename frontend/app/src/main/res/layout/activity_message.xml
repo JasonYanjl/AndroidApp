@@ -6,9 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".MessageActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview"
+    <com.stfalcon.chatkit.messages.MessagesList
+        android:id="@+id/messagesList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+
+        android:layout_marginBottom="50dp"
+        app:dateHeaderFormat="dd MMMM yyyy"
+        app:incomingDefaultBubbleSelectedColor="@color/gray"
+        app:incomingTextColor="@color/black"
+        app:incomingTextSize="16sp"
+        app:outcomingTextColor="@color/white"
+        app:outcomingTextSize="16sp"
+        app:textAutoLink="all" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

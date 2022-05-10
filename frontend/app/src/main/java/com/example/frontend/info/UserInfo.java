@@ -1,11 +1,18 @@
 package com.example.frontend.info;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import com.example.frontend.entity.chat.Message;
+
 public class UserInfo {
     Integer userid;
     String username;
     Integer avatarid;
     String intro;
     String jwt;
+    public List<Message> messageList = Collections.synchronizedList(new ArrayList<>());
 
     private static volatile UserInfo userInfo;
     private UserInfo() {
@@ -52,4 +59,14 @@ public class UserInfo {
     }
 
     public void setJwt(String jwt) {this.jwt = jwt;}
+
+    public List<Message> getMessageList() {return messageList; }
+
+    public void addMessage(Message nowMessage) {
+        this.messageList.add(nowMessage);
+    }
+
+    public void clearArray() {
+        this.messageList.clear();
+    }
 }

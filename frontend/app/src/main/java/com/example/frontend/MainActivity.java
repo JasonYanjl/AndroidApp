@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
                 UserInfo.getInstance().setUserid(obj.getInteger("userid"));
                 UserInfo.getInstance().setUsername(obj.getString("username"));
                 UserInfo.getInstance().setJwt(obj.getString("jwt"));
+                UserInfo.getInstance().clearArray();
 
                 Intent intent = new Intent(MainActivity.this, FrontpageActivity.class);
                 startActivity(intent);

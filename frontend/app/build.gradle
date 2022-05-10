@@ -36,8 +36,11 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation 'com.github.stfalcon-studio:Chatkit:0.4.1'
+    implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.2'
     implementation 'com.alibaba:fastjson:1.2.75'
     implementation("com.jakewharton:butterknife:10.2.1")
+    implementation 'com.kingja.loadsir:loadsir:1.3.8'
     annotationProcessor("com.jakewharton:butterknife-compiler:10.2.1")
 }
