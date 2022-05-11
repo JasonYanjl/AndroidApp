@@ -1,9 +1,15 @@
 package com.example.frontend;
 
+import static android.app.PendingIntent.FLAG_CANCEL_CURRENT;
+
 import androidx.appcompat.app.AppCompatActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +17,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -31,6 +38,11 @@ import java.util.List;
 public class FrontpageActivity extends AppCompatActivity {
 
     private Fragment homepageFragment, relationFragment, postFragment, accountFragment;
+
+    NotificationManager notificationManager;
+    PendingIntent notificationIntent;
+    NotificationChannel notificationChannel;
+    int notificationCount;
 
     @BindView(R.id.navigation)
     BottomNavigationView navigationMenu;
@@ -79,6 +91,19 @@ public class FrontpageActivity extends AppCompatActivity {
 
                             Message message = new Message("1", user, tmpContent, tmpDate, true);
                             UserInfo.getInstance().addMessage(message);
+
+                            if (i==0 && mListSize!=0) {
+                                String channelId = "channel_1";
+                                Notification notification = new NotificationCompat.Builder(FrontpageActivity.this, channelId)
+                                        .setContentTitle("您有一条新通知")
+                                        .setContentText(tmpContent)
+                                        .setSmallIcon(R.drawable.ic_baseline_notifications_24)
+                                        .setAutoCancel(true)
+                                        .setWhen(System.currentTimeMillis())
+                                        .setContentIntent(notificationIntent)
+                                        .build();
+                                notificationManager.notify(notificationCount++, notification);
+                            }
                         }
                     }
                 }
@@ -131,6 +156,12 @@ public class FrontpageActivity extends AppCompatActivity {
             }
             return false;
         });
+
+        // motification
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Intent push = new Intent(FrontpageActivity.this, MessageActivity.class);
+        notificationIntent = PendingIntent.getActivity(FrontpageActivity.this,0, push, PendingIntent.FLAG_IMMUTABLE);
+
         mTimeCounterRunnable.run();
     }
 

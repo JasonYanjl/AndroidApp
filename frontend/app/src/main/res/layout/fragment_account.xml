@@ -20,7 +20,7 @@
         android:layout_marginRight="16dp"
         android:layout_marginBottom="70dp"
         android:clickable="true"
-        app:srcCompat="@drawable/ic_outline_info_24"
-        app:tint="#FF0000"/>
+        app:srcCompat="@drawable/ic_baseline_notifications_24"
+        app:tint="#F44336"/>
 
 </FrameLayout>
