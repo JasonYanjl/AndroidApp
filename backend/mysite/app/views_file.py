@@ -28,10 +28,12 @@ def upload(request):
 
         Filename = NowFile.name
 
+        FillFileName = str(time.time_ns()) + '_' + Filename
+
         NowDoc = models.Doc(doc_user_id=NowUserId,
-                            doc_name=Filename)
+                            doc_name=FillFileName)
         FileDir = FileSavePath
-        NowSavePath = os.path.join(FileDir, str(time.time_ns()) + '_' + Filename)
+        NowSavePath = os.path.join(FileDir, FillFileName)
         NowDoc.doc_path = NowSavePath
 
         try:
