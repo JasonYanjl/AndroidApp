@@ -46,7 +46,7 @@ urlpatterns = [
 
     path('api/file/upload', views_file.upload, name="Upload"),
     path('api/file/download', views_file.download, name="Download"),
-
+    path('api/file/filename', views_file.getfilename, name="GetFilename"),
     # ------
 
     path('api/chat/get', views_chat.chat_get, name="Chatget"),

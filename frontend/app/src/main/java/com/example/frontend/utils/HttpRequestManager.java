@@ -48,6 +48,8 @@ public class HttpRequestManager {
     private final OkHttpClient mOkHttpClient;//okHttpClient 实例
     private final Handler okHttpHandler;//全局处理子线程和M主线程通信
 
+    public String getBaseUrl() {return BASE_URL;}
+
     private HttpRequestManager(Context context) {
         //初始化OkHttpClient
         mOkHttpClient = new OkHttpClient().newBuilder()

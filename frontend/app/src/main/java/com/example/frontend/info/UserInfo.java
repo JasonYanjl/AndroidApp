@@ -12,6 +12,7 @@ public class UserInfo {
     Integer avatarid;
     String intro;
     String jwt;
+    String avatarFilename;
     public List<Message> messageList = Collections.synchronizedList(new ArrayList<>());
 
     private static volatile UserInfo userInfo;
@@ -46,6 +47,10 @@ public class UserInfo {
 
     public String getJwt() {return jwt;}
 
+    public String getAvatarFilename() { return avatarFilename; }
+
+    public void setAvatarFilename(String avatarFilename) { this.avatarFilename = avatarFilename;}
+
     public void setUserid(Integer userid) { this.userid = userid; }
 
     public void setUsername(String username) {
@@ -54,7 +59,7 @@ public class UserInfo {
 
     public void setAvatarid(Integer avatarid) { this.avatarid = avatarid; }
 
-    public void setUserInfo(String intro) {
+    public void setIntro(String intro) {
         this.intro = intro;
     }
 

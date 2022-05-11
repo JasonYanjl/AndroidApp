@@ -108,12 +108,27 @@ public class FrontpageActivity extends AppCompatActivity {
                     }
                 }
             }
+            else if (type==2) {
+                JSONObject res = JSON.parseObject(result);
+                Integer userid = res.getInteger("userid");
+                String username = res.getString("username");
+                Integer avatarid = res.getInteger("avatarid");
+                String intro = res.getString("intro");
+                if (userid.equals(UserInfo.getInstance().getUserid())) {
+                    UserInfo.getInstance().setUsername(username);
+                    UserInfo.getInstance().setAvatarid(avatarid);
+                    UserInfo.getInstance().setIntro(intro);
+                }
+            }
             Log.i("FrontpageActivity---",result);
         }
 
         @Override
         public void onReqFailed(String errorMsg) {
             if (type==1) {
+
+            }
+            else if (type==2) {
 
             }
             Log.e("FrontpageActivity---",errorMsg);
@@ -157,6 +172,9 @@ public class FrontpageActivity extends AppCompatActivity {
             return false;
         });
 
+        // user info
+        updateUserInfo();
+
         // motification
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Intent push = new Intent(FrontpageActivity.this, MessageActivity.class);
@@ -169,6 +187,18 @@ public class FrontpageActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         mHandler.removeCallbacks(mTimeCounterRunnable);
+    }
+
+    public void updateUserInfo() {
+        UserInfo.getInstance().clearArray();
+
+        HttpRequestManager http = HttpRequestManager.getInstance(getApplicationContext());
+        MyCallBack callBack = new MyCallBack(2);
+        HashMap<String, String> data = new HashMap<>();
+        data.put("userid", Integer.toString(UserInfo.getInstance().getUserid()));
+        http.requestAsyn("api/user/hello-user",0, data, callBack);
+
+        updateMessage();
     }
 
     private synchronized void updateMessage() {

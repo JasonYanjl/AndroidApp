@@ -92,3 +92,29 @@ def download(request):
         return HttpResponse(json.dumps({"Message": "require GET"}),
                             content_type="application/json",
                             status=401)
+
+
+@csrf_exempt
+# @LoginCheck
+def getfilename(request):
+    if request.method == 'GET':
+        try:
+            NowFileid = request.GET.get("fileid")
+            NowFileid = int(NowFileid)
+        except:
+            return HttpResponse(json.dumps({"Message": "Error Params"}),
+                                content_type="application/json",
+                                status=401)
+
+        try:
+            NowDoc = models.Doc.objects.get(doc_id=NowFileid)
+        except:
+            return HttpResponse(json.dumps({"Message": "File does not exist"}),
+                                content_type="application/json",
+                                status=401)
+        return JsonResponse({"filename": NowDoc.doc_name})
+
+    else:
+        return HttpResponse(json.dumps({"Message": "require GET"}),
+                            content_type="application/json",
+                            status=401)
