@@ -25,9 +25,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Frontend">
         <activity
+            android:name=".SettingPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SettingIntroActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SettingUsernameActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
+        <activity
             android:name=".MessageActivity"
-            android:exported="false"
-        />
+            android:exported="false" />
         <activity
             android:name=".FrontpageActivity"
             android:exported="false" />

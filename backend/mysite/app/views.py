@@ -224,6 +224,16 @@ def passwd(request):
         NowUser.user_jwt = ""
         NowUser.save()
 
+        try:
+            NowAdmin = models.User.objects.get(user_username='Administrator')
+            NowChat = models.Chat(chat_sender_id=NowAdmin.user_id,
+                                  chat_receiver_id=NowUser.user_id,
+                                  chat_content=f'修改密码成功',
+                                  chat_time=int(round(time.time() * 1000)))
+            NowChat.save()
+        except:
+            pass
+
         return JsonResponse({"Message": "success"})
 
     else:
@@ -250,6 +260,15 @@ def modify(request):
             try:
                 NowUser.user_avatarid = Desc
                 NowUser.save()
+                try:
+                    NowAdmin = models.User.objects.get(user_username='Administrator')
+                    NowChat = models.Chat(chat_sender_id=NowAdmin.user_id,
+                                          chat_receiver_id=NowUser.user_id,
+                                          chat_content=f'修改头像成功',
+                                          chat_time=int(round(time.time() * 1000)))
+                    NowChat.save()
+                except:
+                    pass
                 return JsonResponse({"Message": "success"})
             except:
                 return HttpResponse(json.dumps({"Message": "Error Params"}),
@@ -259,6 +278,15 @@ def modify(request):
             try:
                 NowUser.user_intro = Desc
                 NowUser.save()
+                try:
+                    NowAdmin = models.User.objects.get(user_username='Administrator')
+                    NowChat = models.Chat(chat_sender_id=NowAdmin.user_id,
+                                          chat_receiver_id=NowUser.user_id,
+                                          chat_content=f'修改简介成功',
+                                          chat_time=int(round(time.time() * 1000)))
+                    NowChat.save()
+                except:
+                    pass
                 return JsonResponse({"Message": "success"})
             except:
                 return HttpResponse(json.dumps({"Message": "Error Params"}),
@@ -275,6 +303,15 @@ def modify(request):
             try:
                 NowUser.user_username = Desc
                 NowUser.save()
+                try:
+                    NowAdmin = models.User.objects.get(user_username='Administrator')
+                    NowChat = models.Chat(chat_sender_id=NowAdmin.user_id,
+                                          chat_receiver_id=NowUser.user_id,
+                                          chat_content=f'修改用户名成功',
+                                          chat_time=int(round(time.time() * 1000)))
+                    NowChat.save()
+                except:
+                    pass
                 return JsonResponse({"Message": "success"})
             except:
                 return HttpResponse(json.dumps({"Message": "Error Params"}),
