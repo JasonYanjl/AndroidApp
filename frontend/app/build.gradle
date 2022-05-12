@@ -42,5 +42,6 @@ dependencies {
     implementation 'com.alibaba:fastjson:1.2.75'
     implementation("com.jakewharton:butterknife:10.2.1")
     implementation 'com.kingja.loadsir:loadsir:1.3.8'
+    implementation 'androidx.annotation:annotation:1.1.0'
     annotationProcessor("com.jakewharton:butterknife-compiler:10.2.1")
 }

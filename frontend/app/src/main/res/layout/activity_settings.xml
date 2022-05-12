@@ -42,6 +42,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_centerHorizontal="false"
+                android:scaleType="fitXY"
                 app:srcCompat="@drawable/ic_avatar" />
 
         </LinearLayout>

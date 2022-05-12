@@ -1,12 +1,24 @@
 package com.example.frontend;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,9 +34,11 @@ import com.example.frontend.info.UserInfo;
 import com.example.frontend.utils.FileManager;
 import com.example.frontend.utils.HttpRequestManager;
 
+import java.io.File;
 import java.util.HashMap;
 
 import butterknife.ButterKnife;
+import okhttp3.Call;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -37,6 +51,8 @@ public class SettingsActivity extends AppCompatActivity {
     LinearLayout linearLayoutAvatar, linearLayoutUsername, linearLayoutIntro, linearLayoutPassword;
 
     Button buttonLogout;
+
+    Integer newAvatarID;
 
     public class MyCallBack implements HttpRequestManager.ReqCallBack {
         public int type;
@@ -73,6 +89,21 @@ public class SettingsActivity extends AppCompatActivity {
                         + "/" + UserInfo.getInstance().getAvatarFilename();
                 imageViewAvatar.setImageDrawable(Drawable.createFromPath(fileAbsPath));
             }
+            else if (type==3) {
+                JSONObject res = JSON.parseObject(result.toString());
+                newAvatarID = res.getInteger("fileid");
+
+                MyCallBack callback = new MyCallBack(4);
+                HashMap<String, String> data = new HashMap<>();
+                data.put("userid", Integer.toString(UserInfo.getInstance().getUserid()));
+                data.put("key", "avatarid");
+                data.put("desc", Integer.toString(newAvatarID));
+                HttpRequestManager.getInstance(context).requestAsyn("api/user/modify",1, data, callback);
+            }
+            else if (type==4) {
+                UserInfo.getInstance().setAvatarid(newAvatarID);
+                setInfo();
+            }
             Log.i("SettingsFrag---",result.toString());
         }
 
@@ -89,6 +120,16 @@ public class SettingsActivity extends AppCompatActivity {
                         "载入头像失败",
                         Toast.LENGTH_SHORT).show();
                 imageViewAvatar.setImageResource(R.drawable.ic_avatar);
+            }
+            else if (type==3) {
+                Toast.makeText(context,
+                        "更新头像失败",
+                        Toast.LENGTH_SHORT).show();
+            }
+            else if (type==4) {
+                Toast.makeText(context,
+                        "更新头像失败",
+                        Toast.LENGTH_SHORT).show();
             }
             Log.e("SettingsFrag---",errorMsg);
         }
@@ -133,6 +174,10 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 Log.i("click", "Avatar Click");
+
+                checkPermission();
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent,0x000101);
             }
         });
 
@@ -176,6 +221,72 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.i("onActivityResult", Integer.toString(requestCode));
+        if(requestCode == 0x000101){
+            if (resultCode == Activity.RESULT_OK) {
+                //判断手机系统版本号
+                if (Build.VERSION.SDK_INT >= 19) {
+                    //4.4及以上系统使用这个方法处理图片
+                    //TODO: send http requests
+                    String imagePath = "";
+                    Uri uri = data.getData();
+                    Log.i("Author",uri.getAuthority());
+                    if (DocumentsContract.isDocumentUri(context, uri)) {
+                        String docId = DocumentsContract.getDocumentId(uri);
+                        if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
+                            Log.i("type","com.android.providers.media.documents");
+                            String id = docId.split(":")[1];
+                            String selection = MediaStore.Images.Media._ID + "=" + id;
+                            imagePath = getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection);
+                        }
+                        else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
+                            Log.i("type","com.android.providers.downloads.documents");
+                            Uri contentUri = ContentUris.withAppendedId(
+                                    Uri.parse("content://downloads/public_downloads"),
+                                    Long.valueOf(docId));
+                            imagePath = getImagePath(contentUri, null);
+                        }
+                        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+                            Log.i("type","file");
+                            imagePath = uri.getPath();
+                        }
+                    }
+                    else if ("content".equalsIgnoreCase(uri.getScheme())) {
+                        Log.i("type","content");
+                        imagePath = getImagePath(uri, null);
+                    }
+                    File nowAvatar = new File(imagePath);
+                    HttpRequestManager http = HttpRequestManager.getInstance(getApplicationContext());
+                    MyCallBack callback = new MyCallBack(3);
+                    HashMap<String, Object> photoData = new HashMap<>();
+                    photoData.put("file", nowAvatar);
+                    photoData.put("userid", UserInfo.getInstance().getUserid());
+                    photoData.put("type", Integer.toString(1));
+                    http.upLoadFile("api/file/upload", photoData, callback);
+                }
+            }
+        }
+        else {
+
+        }
+    }
+
+    private String getImagePath(Uri uri, String selection) {
+        String path = null;
+        Cursor cursor = context.getContentResolver().query(uri, null, selection, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            }
+
+            cursor.close();
+        }
+        return path;
+    }
+
+
     public void clearAndLogout() {
         UserInfo.getInstance().clearArray();
         UserInfo.getInstance().setJwt("");
@@ -189,6 +300,16 @@ public class SettingsActivity extends AppCompatActivity {
         SettingsActivity.this.finish();
     }
 
+    private void checkPermission() {
+        //first we need check this Drive has? CAMERA Permission
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(SettingsActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        } else {
+            return;
+        }
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

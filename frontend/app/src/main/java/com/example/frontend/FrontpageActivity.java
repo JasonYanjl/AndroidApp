@@ -47,6 +47,8 @@ public class FrontpageActivity extends AppCompatActivity {
     @BindView(R.id.navigation)
     BottomNavigationView navigationMenu;
 
+    Boolean firstLoad=true;
+
     private static Handler mHandler = new Handler(Looper.getMainLooper());
 
     private Runnable mTimeCounterRunnable = new Runnable() {
@@ -92,13 +94,15 @@ public class FrontpageActivity extends AppCompatActivity {
                             Message message = new Message("1", user, tmpContent, tmpDate, true);
                             UserInfo.getInstance().addMessage(message);
 
-                            if (i==0 && mListSize!=0) {
+                            if (i==0 && !firstLoad) {
+                                Log.i("Message", "新的通知");
                                 String channelId = "channel_1";
-                                Notification notification = new NotificationCompat.Builder(FrontpageActivity.this, channelId)
+                                Notification notification = new NotificationCompat.Builder(FrontpageActivity.this, notificationChannel.getId())
                                         .setContentTitle("您有一条新通知")
                                         .setContentText(tmpContent)
                                         .setSmallIcon(R.drawable.ic_baseline_notifications_24)
                                         .setAutoCancel(true)
+                                        .setVisibility(Notification.VISIBILITY_PRIVATE)
                                         .setWhen(System.currentTimeMillis())
                                         .setContentIntent(notificationIntent)
                                         .build();
@@ -107,6 +111,7 @@ public class FrontpageActivity extends AppCompatActivity {
                         }
                     }
                 }
+                firstLoad = false;
             }
             else if (type==2) {
                 JSONObject res = JSON.parseObject(result);
@@ -179,6 +184,10 @@ public class FrontpageActivity extends AppCompatActivity {
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Intent push = new Intent(FrontpageActivity.this, MessageActivity.class);
         notificationIntent = PendingIntent.getActivity(FrontpageActivity.this,0, push, PendingIntent.FLAG_IMMUTABLE);
+        String id ="channel_1";//channel的id
+        int importance = NotificationManager.IMPORTANCE_HIGH;//channel的重要性
+        notificationChannel = new NotificationChannel(id, "MessageNotification", importance);
+        notificationManager.createNotificationChannel(notificationChannel);
 
         mTimeCounterRunnable.run();
     }

@@ -28,7 +28,7 @@ def upload(request):
 
         Filename = NowFile.name
 
-        FillFileName = str(time.time_ns()) + '_' + Filename
+        FillFileName = str(int(time.time() * 1000000)) + '_' + Filename
 
         NowDoc = models.Doc(doc_user_id=NowUserId,
                             doc_name=FillFileName)
