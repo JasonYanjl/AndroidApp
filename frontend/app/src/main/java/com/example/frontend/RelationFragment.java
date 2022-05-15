@@ -8,6 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.frontend.utils.TabRelationFragment;
+import com.google.android.material.tabs.TabLayout;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link RelationFragment#newInstance} factory method to
@@ -15,28 +21,14 @@ import android.view.ViewGroup;
  */
 public class RelationFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    TabLayout tabLayout;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    TabRelationFragment childFragment;
 
     public RelationFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment RelationFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static RelationFragment newInstance() {
         RelationFragment fragment = new RelationFragment();
         return fragment;
@@ -51,6 +43,40 @@ public class RelationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_relation, container, false);
+        View root = inflater.inflate(R.layout.fragment_relation, container, false);
+
+        tabLayout = (TabLayout)root.findViewById(R.id.tablayout);
+
+        childFragment = TabRelationFragment.newInstance();
+        childFragment.setType(0);
+
+        getChildFragmentManager().beginTransaction().replace(R.id.linearlayoutRelation,childFragment).commit();
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getPosition() == 0){
+                    childFragment = TabRelationFragment.newInstance();
+                    childFragment.setType(0);
+                }
+                if (tab.getPosition() == 1){
+                    childFragment = TabRelationFragment.newInstance();
+                    childFragment.setType(1);
+                }
+                getChildFragmentManager().beginTransaction().replace(R.id.linearlayoutRelation,childFragment).commit();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        return root;
     }
 }

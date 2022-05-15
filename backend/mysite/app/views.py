@@ -349,7 +349,9 @@ def subscribe(request):
                                   chat_time=int(round(time.time() * 1000)))
             NowChat.save()
 
-        return JsonResponse({"Message": "success"})
+        return JsonResponse({"Message": "success",
+                             "userid": UserId,
+                             "subscriberid": subscriber_id})
 
     else:
         return HttpResponse(json.dumps({"Message": "require POST"}),
@@ -377,7 +379,9 @@ def unsubscribe(request):
                                 status=401)
         for NowSubscribe in PastSubscribe:
             NowSubscribe.delete()
-        return JsonResponse({"Message": "success"})
+        return JsonResponse({"Message": "success",
+                             "userid": UserId,
+                             "subscriberid": subscriber_id})
 
     else:
         return HttpResponse(json.dumps({"Message": "require POST"}),
@@ -389,17 +393,16 @@ def unsubscribe(request):
 # @LoginCheck
 def subscribelist(request):
     if (request.method == "GET"):
-        Username = request.GET.get('username')
+        Userid = request.GET.get('userid')
 
-        if Username is None:
-            return HttpResponse(json.dumps({"Message": "Require username"}),
+        if Userid is None:
+            return HttpResponse(json.dumps({"Message": "Require userid"}),
                                 content_type="application/json",
                                 status=401)
 
-        Username = str(Username)
-
         try:
-            NowUser = models.User.objects.get(user_username=Username)
+            Userid = int(Userid)
+            NowUser = models.User.objects.get(user_id=Userid)
         except:
             return HttpResponse(json.dumps({"Message": "Error Params"}),
                                 content_type="application/json",
@@ -411,8 +414,30 @@ def subscribelist(request):
 
         for NowSubscribe in PastSubscribe:
             NowSubscriber = models.User.objects.get(user_id=NowSubscribe.subscribe_subscriber_id)
+            tmpSub = 1
+
+            tmpBlock = 0
+            PastBlock = models.Block.objects.filter(block_user_id=NowUser.user_id,
+                                                    block_blocker_id=NowSubscriber.user_id)
+            if PastBlock.count() > 0:
+                tmpBlock = 1
+
+            tmpFilename = ""
+
+            if NowSubscriber.user_avatarid != -1:
+                try:
+                    NowFile = models.Doc.objects.get(doc_id=NowSubscriber.user_avatarid)
+                    tmpFilename = NowFile.doc_name
+                except:
+                    pass
+
             res.append({'userid': NowSubscriber.user_id,
-                        'username': NowSubscriber.user_username})
+                        'username': NowSubscriber.user_username,
+                        'avatarid': NowSubscriber.user_avatarid,
+                        'avatarfilename': tmpFilename,
+                        'intro': NowSubscriber.user_intro,
+                        'subscribe': tmpSub,
+                        'block': tmpBlock})
 
         return JsonResponse({"list": res})
 
@@ -440,7 +465,9 @@ def block(request):
         if PastBlock.count() == 0:
             NowBlock = models.Block(block_user_id=UserId, block_blocker_id=blocker_id)
             NowBlock.save()
-        return JsonResponse({"Message": "success"})
+        return JsonResponse({"Message": "success",
+                             "userid": UserId,
+                             "blockerid": blocker_id})
 
     else:
         return HttpResponse(json.dumps({"Message": "require POST"}),
@@ -468,7 +495,9 @@ def unblock(request):
                                 status=401)
         for NowBlock in PastBlock:
             NowBlock.delete()
-        return JsonResponse({"Message": "success"})
+        return JsonResponse({"Message": "success",
+                             "userid": UserId,
+                             "blockerid": blocker_id})
 
     else:
         return HttpResponse(json.dumps({"Message": "require POST"}),
@@ -480,17 +509,16 @@ def unblock(request):
 # @LoginCheck
 def blocklist(request):
     if (request.method == "GET"):
-        Username = request.GET.get('username')
+        Userid = request.GET.get('userid')
 
-        if Username is None:
-            return HttpResponse(json.dumps({"Message": "Require username"}),
+        if Userid is None:
+            return HttpResponse(json.dumps({"Message": "Require userid"}),
                                 content_type="application/json",
                                 status=401)
 
-        Username = str(Username)
-
         try:
-            NowUser = models.User.objects.get(user_username=Username)
+            Userid = int(Userid)
+            NowUser = models.User.objects.get(user_id=Userid)
         except:
             return HttpResponse(json.dumps({"Message": "Error Params"}),
                                 content_type="application/json",
@@ -502,8 +530,30 @@ def blocklist(request):
 
         for NowBlock in PastBlock:
             NowBlocker = models.User.objects.get(user_id=NowBlock.block_blocker_id)
+            tmpSub = 0
+            PastSubscribe = models.Subscribe.objects.filter(subscribe_user_id=NowUser.user_id,
+                                                            subscribe_subscriber_id=NowBlocker.user_id)
+            if PastSubscribe.count() > 0:
+                tmpSub = 1
+
+            tmpBlock = 1
+
+            tmpFilename = ""
+
+            if NowBlocker.user_avatarid != -1:
+                try:
+                    NowFile = models.Doc.objects.get(doc_id=NowBlocker.user_avatarid)
+                    tmpFilename = NowFile.doc_name
+                except:
+                    pass
+
             res.append({'userid': NowBlocker.user_id,
-                        'username': NowBlocker.user_username})
+                        'username': NowBlocker.user_username,
+                        'avatarid': NowBlocker.user_avatarid,
+                        'avatarfilename': tmpFilename,
+                        'intro': NowBlocker.user_intro,
+                        'subscribe': tmpSub,
+                        'block': tmpBlock})
 
         return JsonResponse({"list": res})
 

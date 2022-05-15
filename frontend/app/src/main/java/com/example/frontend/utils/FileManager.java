@@ -2,6 +2,7 @@ package com.example.frontend.utils;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
 import com.example.frontend.info.UserInfo;
 

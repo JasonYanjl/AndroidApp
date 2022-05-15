@@ -25,6 +25,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Frontend">
         <activity
+            android:name=".AccountActivity"
+            android:exported="false" />
+        <activity
             android:name=".SettingPasswordActivity"
             android:exported="false" />
         <activity

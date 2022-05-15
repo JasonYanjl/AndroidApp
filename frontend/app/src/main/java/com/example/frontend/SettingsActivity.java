@@ -72,8 +72,9 @@ public class SettingsActivity extends AppCompatActivity {
                 String fileAbsPath =  FileManager.getInstance().getUserFileAbsolutePath(context, "avatar")
                         + "/" + filename;
 
-                if (FileManager.getInstance().getUserFileExists(context, fileAbsPath)) {
+                if (FileManager.getInstance().getUserFileExists(context, "avatar" + "/" + filename)) {
                     // set avatar
+                    imageViewAvatar.setImageDrawable(Drawable.createFromPath(fileAbsPath));
                 }
                 else {
                     String url = HttpRequestManager.getInstance(context).getBaseUrl() + "/api/file/download?fileid="
@@ -170,7 +171,7 @@ public class SettingsActivity extends AppCompatActivity {
         setInfo();
 
         //
-        linearLayoutAvatar.setOnClickListener(new TextView.OnClickListener(){
+        linearLayoutAvatar.setOnClickListener(new LinearLayout.OnClickListener(){
             @Override
             public void onClick(View v){
                 Log.i("click", "Avatar Click");
@@ -181,7 +182,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        linearLayoutUsername.setOnClickListener(new TextView.OnClickListener(){
+        linearLayoutUsername.setOnClickListener(new LinearLayout.OnClickListener(){
             @Override
             public void onClick(View v){
                 Log.i("click", "Username Click");
@@ -191,7 +192,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        linearLayoutIntro.setOnClickListener(new TextView.OnClickListener(){
+        linearLayoutIntro.setOnClickListener(new LinearLayout.OnClickListener(){
             @Override
             public void onClick(View v){
                 Log.i("click", "Intro Click");
@@ -201,7 +202,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        linearLayoutPassword.setOnClickListener(new TextView.OnClickListener(){
+        linearLayoutPassword.setOnClickListener(new LinearLayout.OnClickListener(){
             @Override
             public void onClick(View v){
                 Log.i("click", "Password Click");
@@ -211,7 +212,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        buttonLogout.setOnClickListener(new View.OnClickListener() {
+        buttonLogout.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("click", "logout click");
