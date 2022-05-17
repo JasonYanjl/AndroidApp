@@ -102,7 +102,7 @@ public class FrontpageActivity extends AppCompatActivity {
                                         .setContentText(tmpContent)
                                         .setSmallIcon(R.drawable.ic_baseline_notifications_24)
                                         .setAutoCancel(true)
-                                        .setVisibility(Notification.VISIBILITY_PRIVATE)
+                                        .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
                                         .setWhen(System.currentTimeMillis())
                                         .setContentIntent(notificationIntent)
                                         .build();

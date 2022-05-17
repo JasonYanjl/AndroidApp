@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidApp/frontend/app/src/main/res/layout/activity_account.xml" value="0.171875" />
+        <entry key="..\:/AndroidApp/frontend/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/drawable/ic_baseline_home_24.xml" value="0.117" />
         <entry key="app/src/main/res/drawable/ic_baseline_post_add_24.xml" value="0.117" />
         <entry key="app/src/main/res/layout/activity_frontpage.xml" value="0.17391304347826086" />

@@ -36,6 +36,7 @@ import com.example.frontend.utils.HttpRequestManager;
 
 import java.io.File;
 import java.util.HashMap;
+import java.lang.Exception;
 
 import butterknife.ButterKnife;
 import okhttp3.Call;
@@ -279,7 +280,10 @@ public class SettingsActivity extends AppCompatActivity {
         Cursor cursor = context.getContentResolver().query(uri, null, selection, null, null);
         if (cursor != null) {
             if (cursor.moveToFirst()) {
-                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                int index = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+                // wrong path
+                if (index < 0) return null;
+                path = cursor.getString(index);
             }
 
             cursor.close();
