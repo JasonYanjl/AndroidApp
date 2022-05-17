@@ -366,6 +366,7 @@ def discover_search(request):
         try:
             search_type = str(search_type)
             search_text = str(search_text)
+            search_text_list = search_text.split(' ')
         except:
             return HttpResponse(json.dumps({"Message": "Error Params"}),
                                 content_type="application/json",
@@ -381,13 +382,18 @@ def discover_search(request):
                                     content_type="application/json",
                                     status=401)
 
-
+        NowRes = models.Post.objects.all()
         if search_type == "title":
-            NowRes = models.Post.objects.filter(post_title__contains=search_text)
+            for tmp_text in search_text_list:
+                NowRes = NowRes.filter(post_title__contains=tmp_text)
         elif search_type == "text":
-            NowRes = models.Post.objects.filter(post_text__contains=search_text)
+            for tmp_text in search_text_list:
+                NowRes = NowRes.filter(post_text__contains=tmp_text)
         elif search_type == "username":
-            PastUser = models.User.objects.filter(user_username__contains=search_text)
+            PastUser = models.User.objects.all()
+            for tmp_text in search_text_list:
+                PastUser = PastUser.filter(user_username__contains=tmp_text)
+
             NowRes = None
 
             for NowPostUser in PastUser:
