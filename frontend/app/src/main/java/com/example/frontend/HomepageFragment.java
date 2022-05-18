@@ -1,12 +1,16 @@
 package com.example.frontend;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -15,14 +19,9 @@ import android.view.ViewGroup;
  */
 public class HomepageFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    Context context;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    RadioButton radioButtonTime, radioButtonLike, radioButtonAll, radioButtonFollow;
 
     public HomepageFragment() {
         // Required empty public constructor
@@ -44,6 +43,57 @@ public class HomepageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_homepage, container, false);
+        View root = inflater.inflate(R.layout.fragment_homepage, container, false);
+        radioButtonTime = (RadioButton) root.findViewById(R.id.radioButtonTime);
+        radioButtonLike = (RadioButton) root.findViewById(R.id.radioButtonLike);
+        radioButtonAll = (RadioButton) root.findViewById(R.id.radioButtonAll);
+        radioButtonFollow = (RadioButton) root.findViewById(R.id.radioButtonFollow);
+        context = this.getActivity();
+
+        radioButtonTime.setOnClickListener(new RadioButton.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Log.i("click", "radioTime click");
+                if (radioButtonLike.isChecked()) {
+                    radioButtonTime.setChecked(true);
+                    radioButtonLike.setChecked(false);
+                }
+            }
+        });
+
+        radioButtonLike.setOnClickListener(new RadioButton.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Log.i("click", "radioLike click");
+                if (radioButtonTime.isChecked()) {
+                    radioButtonTime.setChecked(false);
+                    radioButtonLike.setChecked(true);
+                }
+            }
+        });
+
+        radioButtonAll.setOnClickListener(new RadioButton.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Log.i("click", "radioAll click");
+                if (radioButtonFollow.isChecked()) {
+                    radioButtonAll.setChecked(true);
+                    radioButtonFollow.setChecked(false);
+                }
+            }
+        });
+
+        radioButtonFollow.setOnClickListener(new RadioButton.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Log.i("click", "radioFollow click");
+                if (radioButtonAll.isChecked()) {
+                    radioButtonAll.setChecked(false);
+                    radioButtonFollow.setChecked(true);
+                }
+            }
+        });
+
+        return root;
     }
 }
