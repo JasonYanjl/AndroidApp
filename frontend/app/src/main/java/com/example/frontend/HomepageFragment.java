@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -16,6 +17,9 @@ import android.widget.RadioButton;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.example.frontend.adapter.PostAdapter;
+import com.example.frontend.adapter.RelationAdapter;
 import com.example.frontend.info.PostInfo;
 import com.example.frontend.info.UserInfo;
 import com.example.frontend.utils.HttpRequestManager;
@@ -37,6 +41,8 @@ public class HomepageFragment extends Fragment {
     EditText searchText;
 
     RecyclerView recyclerView;
+
+    PostAdapter postAdapter;
 
     public HomepageFragment() {
         // Required empty public constructor
@@ -62,7 +68,26 @@ public class HomepageFragment extends Fragment {
             if (type == 1) {
                 JSONArray nowList = JSON.parseObject(result.toString()).getJSONArray("list");
                 LinkedList<PostInfo> postInfoLinkedList = new LinkedList<>();
-                
+                for(int i=0;i<nowList.size();i++) {
+                    JSONObject tmpInfo = nowList.getJSONObject(i);
+                    postInfoLinkedList.addLast(new PostInfo(tmpInfo.getInteger("postid"),
+                            tmpInfo.getInteger("userid"),
+                            tmpInfo.getString("username"),
+                            tmpInfo.getInteger("avatarid"),
+                            tmpInfo.getString("avatarfilename"),
+                            tmpInfo.getInteger("fileid"),
+                            tmpInfo.getString("filename"),
+                            tmpInfo.getString("title"),
+                            tmpInfo.getString("text"),
+                            tmpInfo.getInteger("type"),
+                            tmpInfo.getString("time"),
+                            tmpInfo.getString("location"),
+                            tmpInfo.getInteger("subscribe"),
+                            tmpInfo.getInteger("block")));
+//                    postAdapter = new PostAdapter(context, postInfoLinkedList);
+//                    recyclerView.setAdapter(postAdapter);
+//                    recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                }
             }
             Log.i("HomepageRelation", result.toString());
         }
