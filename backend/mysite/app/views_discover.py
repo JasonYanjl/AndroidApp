@@ -351,11 +351,30 @@ def discover_get(request):
                                                             block_blocker_id=NowPoster.user_id)
                     if PastBlock.count()>0:
                         tmpBlock = 1
+
+                    tmpAvatarFilename = ""
+
+                    try:
+                        NowFile = models.Doc.objects.get(doc_id=NowPoster.user_avatarid)
+                        tmpAvatarFilename = NowFile.doc_name
+                    except:
+                        pass
+
+                    filename = ""
+
+                    try:
+                        NowFile = models.Doc.objects.get(doc_id=NowPost.post_file_id)
+                        filename = NowFile.doc_name
+                    except:
+                        pass
+
                     res.append({"postid": NowPost.post_id,
                              "userid": NowPoster.user_id,
                              "username": NowPoster.user_username,
                                 "avatarid": NowPoster.user_avatarid,
+                                "avatarfilename": tmpAvatarFilename,
                              "fileid": NowPost.post_file_id,
+                                "filename": filename,
                              "title": NowPost.post_title,
                              "text": NowPost.post_text,
                              "type": NowPost.post_type,
@@ -475,11 +494,30 @@ def discover_search(request):
                                                             block_blocker_id=NowPoster.user_id)
                     if PastBlock.count() > 0:
                         tmpBlock = 1
+
+                    tmpAvatarFilename = ""
+
+                    try:
+                        NowFile = models.Doc.objects.get(doc_id=NowPoster.user_avatarid)
+                        tmpAvatarFilename = NowFile.doc_name
+                    except:
+                        pass
+
+                    filename = ""
+
+                    try:
+                        NowFile = models.Doc.objects.get(doc_id=NowPost.post_file_id)
+                        filename = NowFile.doc_name
+                    except:
+                        pass
+
                     res.append({"postid": NowPost.post_id,
                                 "userid": NowPoster.user_id,
                                 "username": NowPoster.user_username,
                                 "avatarid": NowPoster.user_avatarid,
+                                "avatarfilename": tmpAvatarFilename,
                                 "fileid": NowPost.post_file_id,
+                                "filename": filename,
                                 "title": NowPost.post_title,
                                 "text": NowPost.post_text,
                                 "type": NowPost.post_type,
@@ -518,11 +556,29 @@ def discover_deatil(request):
                                 content_type="application/json",
                                 status=401)
 
+        tmpAvatarFilename = ""
+
+        try:
+            NowFile = models.Doc.objects.get(doc_id=NowUser.user_avatarid)
+            tmpAvatarFilename = NowFile.doc_name
+        except:
+            pass
+
+        filename = ""
+
+        try:
+            NowFile = models.Doc.objects.get(doc_id=NowPost.post_file_id)
+            filename = NowFile.doc_name
+        except:
+            pass
+
         return JsonResponse({"postid": NowPost.post_id,
                              "userid": NowUser.user_id,
                              "username": NowUser.user_username,
                              "avatarid": NowUser.user_avatarid,
+                             "avatarfilename": tmpAvatarFilename,
                              "fileid": NowPost.post_file_id,
+                             "filename": filename,
                              "title": NowPost.post_title,
                              "text": NowPost.post_text,
                              "type": NowPost.post_type,
