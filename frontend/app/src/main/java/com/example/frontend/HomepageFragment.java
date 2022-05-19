@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.RadioButton;
 
 /**
@@ -22,6 +23,8 @@ public class HomepageFragment extends Fragment {
     Context context;
 
     RadioButton radioButtonTime, radioButtonLike, radioButtonAll, radioButtonFollow;
+
+    EditText searchText;
 
     public HomepageFragment() {
         // Required empty public constructor
@@ -44,11 +47,20 @@ public class HomepageFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_homepage, container, false);
+        searchText = (EditText) root.findViewById(R.id.search_view);
         radioButtonTime = (RadioButton) root.findViewById(R.id.radioButtonTime);
         radioButtonLike = (RadioButton) root.findViewById(R.id.radioButtonLike);
         radioButtonAll = (RadioButton) root.findViewById(R.id.radioButtonAll);
         radioButtonFollow = (RadioButton) root.findViewById(R.id.radioButtonFollow);
         context = this.getActivity();
+
+        searchText.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Log.i("click", "search click");
+
+            }
+        });
 
         radioButtonTime.setOnClickListener(new RadioButton.OnClickListener(){
             @Override
