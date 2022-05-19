@@ -354,11 +354,13 @@ def discover_get(request):
                     res.append({"postid": NowPost.post_id,
                              "userid": NowPoster.user_id,
                              "username": NowPoster.user_username,
+                                "avatarid": NowPoster.user_avatarid,
                              "fileid": NowPost.post_file_id,
                              "title": NowPost.post_title,
                              "text": NowPost.post_text,
                              "type": NowPost.post_type,
                              "location": NowPost.post_location,
+                             "time": time2str(NowPost.post_time),
                              "subscribe": tmpSub,
                              "block": tmpBlock})
                 except:
@@ -476,10 +478,12 @@ def discover_search(request):
                     res.append({"postid": NowPost.post_id,
                                 "userid": NowPoster.user_id,
                                 "username": NowPoster.user_username,
+                                "avatarid": NowPoster.user_avatarid,
                                 "fileid": NowPost.post_file_id,
                                 "title": NowPost.post_title,
                                 "text": NowPost.post_text,
                                 "type": NowPost.post_type,
+                                "time": time2str(NowPost.post_time),
                                 "location": NowPost.post_location,
                                 "subscribe": tmpSub,
                                 "block": tmpBlock})
@@ -517,10 +521,12 @@ def discover_deatil(request):
         return JsonResponse({"postid": NowPost.post_id,
                              "userid": NowUser.user_id,
                              "username": NowUser.user_username,
+                             "avatarid": NowUser.user_avatarid,
                              "fileid": NowPost.post_file_id,
                              "title": NowPost.post_title,
                              "text": NowPost.post_text,
                              "type": NowPost.post_type,
+                             "time": time2str(NowPost.post_time),
                              "location": NowPost.post_location})
 
     else:
