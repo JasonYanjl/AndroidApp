@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RadioButton;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.example.frontend.info.PostInfo;
+import com.example.frontend.info.UserInfo;
+import com.example.frontend.utils.HttpRequestManager;
+
+import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,6 +36,8 @@ public class HomepageFragment extends Fragment {
 
     EditText searchText;
 
+    RecyclerView recyclerView;
+
     public HomepageFragment() {
         // Required empty public constructor
     }
@@ -35,6 +47,34 @@ public class HomepageFragment extends Fragment {
     public static HomepageFragment newInstance() {
         HomepageFragment fragment = new HomepageFragment();
         return fragment;
+    }
+
+    public class MyCallBack implements HttpRequestManager.ReqCallBack {
+        public int type;
+        public MyCallBack(int type){
+            this.type = type;
+        }
+        public void setType(int type){
+            this.type = type;
+        }
+        @Override
+        public void onReqSuccess(Object result) {
+            if (type == 1) {
+                JSONArray nowList = JSON.parseObject(result.toString()).getJSONArray("list");
+                LinkedList<PostInfo> postInfoLinkedList = new LinkedList<>();
+                
+            }
+            Log.i("HomepageRelation", result.toString());
+        }
+
+
+        @Override
+        public void onReqFailed(String errorMsg) {
+            if (type == 1) {
+
+            }
+            Log.e("HomepageRelation", errorMsg);
+        }
     }
 
     @Override
@@ -52,13 +92,17 @@ public class HomepageFragment extends Fragment {
         radioButtonLike = (RadioButton) root.findViewById(R.id.radioButtonLike);
         radioButtonAll = (RadioButton) root.findViewById(R.id.radioButtonAll);
         radioButtonFollow = (RadioButton) root.findViewById(R.id.radioButtonFollow);
+        recyclerView = (RecyclerView) root.findViewById(R.id.recyclerViewHome);
         context = this.getActivity();
+
+        UpdateRecyclerView();
 
         searchText.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 Log.i("click", "search click");
-
+                Intent intent = new Intent(getActivity(), SearchActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -69,6 +113,7 @@ public class HomepageFragment extends Fragment {
                 if (radioButtonLike.isChecked()) {
                     radioButtonTime.setChecked(true);
                     radioButtonLike.setChecked(false);
+                    UpdateRecyclerView();
                 }
             }
         });
@@ -80,6 +125,7 @@ public class HomepageFragment extends Fragment {
                 if (radioButtonTime.isChecked()) {
                     radioButtonTime.setChecked(false);
                     radioButtonLike.setChecked(true);
+                    UpdateRecyclerView();
                 }
             }
         });
@@ -91,6 +137,7 @@ public class HomepageFragment extends Fragment {
                 if (radioButtonFollow.isChecked()) {
                     radioButtonAll.setChecked(true);
                     radioButtonFollow.setChecked(false);
+                    UpdateRecyclerView();
                 }
             }
         });
@@ -102,10 +149,31 @@ public class HomepageFragment extends Fragment {
                 if (radioButtonAll.isChecked()) {
                     radioButtonAll.setChecked(false);
                     radioButtonFollow.setChecked(true);
+                    UpdateRecyclerView();
                 }
             }
         });
 
         return root;
+    }
+
+    private void UpdateRecyclerView() {
+        HashMap<String, String> data = new HashMap<>();
+        HttpRequestManager http = HttpRequestManager.getInstance(context);
+        MyCallBack callback = new MyCallBack(1);
+        data.put("userid", Integer.toString(UserInfo.getInstance().getUserid()));
+        if (radioButtonTime.isChecked()) {
+            data.put("sort", "time");
+        }
+        else {
+            data.put("sort", "like");
+        }
+        if (radioButtonAll.isChecked()) {
+            data.put("subscribe", Integer.toString(0));
+        }
+        else {
+            data.put("subscribe", Integer.toString(0));
+        }
+        http.requestAsyn("api/discover/get", 0, data, callback);
     }
 }

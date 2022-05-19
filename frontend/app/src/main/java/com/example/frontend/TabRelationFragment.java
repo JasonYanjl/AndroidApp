@@ -1,4 +1,4 @@
-package com.example.frontend.utils;
+package com.example.frontend;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,21 +12,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.example.frontend.R;
 import com.example.frontend.adapter.RelationAdapter;
 import com.example.frontend.info.RelationInfo;
 import com.example.frontend.info.UserInfo;
+import com.example.frontend.utils.HttpRequestManager;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
-
-import okhttp3.Call;
 
 /**
  * A simple {@link Fragment} subclass.
