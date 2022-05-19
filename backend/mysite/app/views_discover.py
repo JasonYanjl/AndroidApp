@@ -307,10 +307,18 @@ def discover_get(request):
 
         if subscribe == 0:
             NowRes = models.Post.objects.all()
+            if NowRes is not None:
+                PastBlock = models.Block.objects.filter(block_user_id=user_id)
+                for NowBlock in PastBlock:
+                    NowRes = NowRes.filter(~Q(post_user_id=NowBlock.block_blocker_id))
+
         elif subscribe == 1:
             NowRes = None
             PastSubscribe = models.Subscribe.objects.filter(subscribe_user_id=user_id)
             for NowSubscribe in PastSubscribe:
+                PastBlock = models.Block.objects.filter(block_user_id=user_id, block_blocker_id=NowSubscribe.subscribe_subscriber_id)
+                if PastBlock.count() > 0:
+                    continue
                 if NowRes is None:
                     NowRes = models.Post.objects.filter(post_user_id=NowSubscribe.subscribe_subscriber_id)
                 else:
@@ -321,10 +329,10 @@ def discover_get(request):
                                 content_type="application/json",
                                 status=401)
 
-        if NowRes is not None:
-            PastBlock = models.Block.objects.filter(block_user_id=user_id)
-            for NowBlock in PastBlock:
-                NowRes = NowRes.filter(~Q(post_user_id=NowBlock.block_blocker_id))
+        # if NowRes is not None:
+        #     PastBlock = models.Block.objects.filter(block_user_id=user_id)
+        #     for NowBlock in PastBlock:
+        #         NowRes = NowRes.filter(~Q(post_user_id=NowBlock.block_blocker_id))
 
         if Sort == 'time':
             if NowRes is not None:
