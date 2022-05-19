@@ -339,7 +339,30 @@ def discover_get(request):
 
         if NowRes is not None:
             for NowPost in NowRes:
-                res.append({'postid': NowPost.post_id})
+                try:
+                    NowPoster = models.User.objects.get(user_id=NowPost.post_user_id)
+                    tmpSub = 0
+                    tmpBlock = 0
+                    PastSubscribe = models.Subscribe.objects.filter(subscribe_user_id=NowUser.user_id,
+                                                                    subscribe_subscriber_id=NowPoster.user_id)
+                    if PastSubscribe.count() > 0:
+                        tmpSub = 1
+                    PastBlock = models.Block.objects.filter(block_user_id=NowUser.user_id,
+                                                            block_blocker_id=NowPoster.user_id)
+                    if PastBlock.count()>0:
+                        tmpBlock = 1
+                    res.append({"postid": NowPost.post_id,
+                             "userid": NowPoster.user_id,
+                             "username": NowPoster.user_username,
+                             "fileid": NowPost.post_file_id,
+                             "title": NowPost.post_title,
+                             "text": NowPost.post_text,
+                             "type": NowPost.post_type,
+                             "location": NowPost.post_location,
+                             "subscribe": tmpSub,
+                             "block": tmpBlock})
+                except:
+                    pass
 
         return JsonResponse({"list": res})
 
@@ -353,6 +376,7 @@ def discover_get(request):
 # @LoginCheck
 def discover_search(request):
     if (request.method == "GET"):
+        user_id = request.GET.get('userid')
         search_type = request.GET.get('searchtype')
         search_text = request.GET.get('searchtext')
         post_type = request.GET.get('posttype')
@@ -367,6 +391,8 @@ def discover_search(request):
             search_type = str(search_type)
             search_text = str(search_text)
             search_text_list = search_text.split(' ')
+            user_id = int(user_id)
+            NowUser = models.User.objects.get(user_id=user_id)
         except:
             return HttpResponse(json.dumps({"Message": "Error Params"}),
                                 content_type="application/json",
@@ -435,7 +461,30 @@ def discover_search(request):
 
         if NowRes is not None:
             for NowPost in NowRes:
-                res.append({'postid': NowPost.post_id})
+                try:
+                    NowPoster = models.User.objects.get(user_id=NowPost.post_user_id)
+                    tmpSub = 0
+                    tmpBlock = 0
+                    PastSubscribe = models.Subscribe.objects.filter(subscribe_user_id=NowUser.user_id,
+                                                                    subscribe_subscriber_id=NowPoster.user_id)
+                    if PastSubscribe.count() > 0:
+                        tmpSub = 1
+                    PastBlock = models.Block.objects.filter(block_user_id=NowUser.user_id,
+                                                            block_blocker_id=NowPoster.user_id)
+                    if PastBlock.count() > 0:
+                        tmpBlock = 1
+                    res.append({"postid": NowPost.post_id,
+                                "userid": NowPoster.user_id,
+                                "username": NowPoster.user_username,
+                                "fileid": NowPost.post_file_id,
+                                "title": NowPost.post_title,
+                                "text": NowPost.post_text,
+                                "type": NowPost.post_type,
+                                "location": NowPost.post_location,
+                                "subscribe": tmpSub,
+                                "block": tmpBlock})
+                except:
+                    pass
 
         return JsonResponse({"list": res})
 
