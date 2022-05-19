@@ -1,27 +1,37 @@
 package com.example.frontend.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ShareCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.frontend.AccountActivity;
 import com.example.frontend.AccountFragment;
 import com.example.frontend.R;
 import com.example.frontend.SettingPasswordActivity;
+import com.example.frontend.info.CommentInfo;
+import com.example.frontend.info.LikeInfo;
 import com.example.frontend.info.PostInfo;
 import com.example.frontend.info.RelationInfo;
 import com.example.frontend.info.UserInfo;
@@ -88,6 +98,7 @@ public class PostAdapter extends
         public final ImageView AvatarImageView;
         public final Button SubscribeButton, BlockButton;
         public final ImageButton LikeButton, CommmentButton, ShareButton;
+        public CommentAdapter commentAdapter;
         final PostAdapter mAdapter;
 
         /**
@@ -132,7 +143,130 @@ public class PostAdapter extends
         }
         @Override
         public void onReqSuccess(Object result) {
-
+            if (type == 1) {
+                notifyDataSetChanged();
+            }
+            else if (type==2) {
+                JSONObject res = JSON.parseObject(result.toString());
+                Integer subscriberid = res.getInteger("subscriberid");
+                for(int i=0;i<mPost.size();i++) {
+                    if (mPost.get(i).userid.equals(subscriberid)) {
+                        mPost.get(i).isSubscribe = 0;
+                        PostData.get(i).isSubscribe = 0;
+                    }
+                }
+                notifyDataSetChanged();
+            }
+            else if (type==3) {
+                JSONObject res = JSON.parseObject(result.toString());
+                Integer subscriberid = res.getInteger("subscriberid");
+                for(int i=0;i<mPost.size();i++) {
+                    if (mPost.get(i).userid.equals(subscriberid)) {
+                        mPost.get(i).isSubscribe = 1;
+                        PostData.get(i).isSubscribe = 1;
+                    }
+                }
+                notifyDataSetChanged();
+            }
+            else if (type==4) {
+                JSONObject res = JSON.parseObject(result.toString());
+                Integer blockerid = res.getInteger("blockerid");
+                for(int i=0;i<mPost.size();i++) {
+                    if (mPost.get(i).userid.equals(blockerid)) {
+                        mPost.get(i).isBlock = 0;
+                        PostData.get(i).isBlock = 0;
+                    }
+                }
+                notifyDataSetChanged();
+            }
+            else if (type==5) {
+                JSONObject res = JSON.parseObject(result.toString());
+                Integer blockerid = res.getInteger("blockerid");
+                for(int i=0;i<mPost.size();i++) {
+                    if (mPost.get(i).userid.equals(blockerid)) {
+                        mPost.get(i).isBlock = 1;
+                        PostData.get(i).isBlock = 1;
+                    }
+                }
+                notifyDataSetChanged();
+            }
+            else if (type==6) {
+                JSONObject res = JSON.parseObject(result.toString());
+                Integer tmpPostID = res.getInteger("postid");
+                JSONArray tmpArray = res.getJSONArray("list");
+                LinkedList<LikeInfo> tmpLike = new LinkedList<LikeInfo>();
+                for(int i=0;i<tmpArray.size();i++) {
+                    tmpLike.addLast(new LikeInfo(tmpArray.getJSONObject(i).getInteger("userid"),
+                            tmpArray.getJSONObject(i).getString("username")));
+                }
+                for(int i=0;i<mPost.size();i++) {
+                    if (mPost.get(i).postid.equals(tmpPostID)) {
+                        mPost.get(i).catchLike = true;
+                        mPost.get(i).Like = tmpLike;
+                        PostData.get(i).catchLike = true;
+                        PostData.get(i).Like = tmpLike;
+                    }
+                }
+                notifyDataSetChanged();
+            }
+            else if (type==7) {
+                JSONObject res = JSON.parseObject(result.toString());
+                Integer tmpPostID = res.getInteger("postid");
+                for(int i=0;i<mPost.size();i++) {
+                    if (mPost.get(i).postid.equals(tmpPostID)) {
+                        mPost.get(i).catchLike = false;
+                        PostData.get(i).catchLike = false;
+                    }
+                }
+                notifyDataSetChanged();
+            }
+            else if (type==8) {
+                JSONObject res = JSON.parseObject(result.toString());
+                Integer tmpPostID = res.getInteger("postid");
+                for(int i=0;i<mPost.size();i++) {
+                    if (mPost.get(i).postid.equals(tmpPostID)) {
+                        mPost.get(i).catchLike = false;
+                        PostData.get(i).catchLike = false;
+                    }
+                }
+                notifyDataSetChanged();
+            }
+            else if (type==9) {
+                JSONObject res = JSON.parseObject(result.toString());
+                Integer tmpPostID = res.getInteger("postid");
+                JSONArray tmpArray = res.getJSONArray("list");
+                LinkedList<CommentInfo> tmpComment = new LinkedList<CommentInfo>();
+                for(int i=0;i<tmpArray.size();i++) {
+                    JSONObject tmpObject = tmpArray.getJSONObject(i);
+                    tmpComment.addLast(new CommentInfo(tmpObject.getInteger("userid"),
+                            tmpObject.getString("username"),
+                            tmpObject.getInteger("avatarid"),
+                            tmpObject.getString("intro"),
+                            tmpObject.getInteger("commentid"),
+                            tmpObject.getString("text"),
+                            tmpObject.getString("time")));
+                }
+                for(int i=0;i<mPost.size();i++) {
+                    if (mPost.get(i).postid.equals(tmpPostID)) {
+                        mPost.get(i).catchComment = true;
+                        mPost.get(i).Comment = tmpComment;
+                        PostData.get(i).catchComment = true;
+                        PostData.get(i).Comment = tmpComment;
+                    }
+                }
+                notifyDataSetChanged();
+            }
+            else if (type==10) {
+                JSONObject res = JSON.parseObject(result.toString());
+                Integer tmpPostID = res.getInteger("postid");
+                for(int i=0;i<mPost.size();i++) {
+                    if (mPost.get(i).postid.equals(tmpPostID)) {
+                        mPost.get(i).catchComment = false;
+                        PostData.get(i).catchComment = false;
+                    }
+                }
+                notifyDataSetChanged();
+            }
             Log.i("PostAdapter---",result.toString());
         }
 
@@ -201,7 +335,227 @@ public class PostAdapter extends
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder,
                                  int position) {
         if (holder instanceof PostTextViewHolder) {
+            PostTextViewHolder tmpPostTextViewHolder = (PostTextViewHolder) holder;
+            PostInfo tmpInfo = mPost.get(position);
 
+            //avatar
+            if (tmpInfo.avatarid == -1 || tmpInfo.avatarFilename.equals("")) {
+                tmpPostTextViewHolder.AvatarImageView.setImageResource(R.drawable.ic_avatar);
+            }
+            else {
+                String fileAbsPath =  FileManager.getInstance().getUserFileAbsolutePath(context, "avatar")
+                        + "/" + tmpInfo.avatarFilename;
+                if (FileManager.getInstance().getUserFileExists(context, "avatar" + "/" + tmpInfo.avatarFilename)) {
+                    // set avatar
+                    tmpPostTextViewHolder.AvatarImageView.setImageDrawable(Drawable.createFromPath(fileAbsPath));
+                }
+                else {
+                    String url = HttpRequestManager.getInstance(context).getBaseUrl() + "/api/file/download?fileid="
+                            + Integer.toString(tmpInfo.avatarid);
+                    String destDir = FileManager.getInstance().getUserFileAbsolutePath(context, "avatar");
+                    MyCallBack callback = new MyCallBack(1);
+                    HttpRequestManager.getInstance(context).downLoadFile(url, tmpInfo.avatarFilename, destDir, callback);
+                    Log.i("Download to", fileAbsPath);
+                    tmpPostTextViewHolder.AvatarImageView.setImageResource(R.drawable.ic_avatar);
+                }
+            }
+            //username
+            tmpPostTextViewHolder.UsernameItemView.setText(tmpInfo.username);
+            tmpPostTextViewHolder.UsernameItemView.setOnClickListener(new TextView.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, AccountActivity.class);
+                    intent.putExtra("userid", tmpInfo.userid);
+                    intent.putExtra("username", tmpInfo.username);
+                    intent.putExtra("avatarid", tmpInfo.avatarid);
+                    intent.putExtra("intro", tmpInfo.intro);
+                    context.startActivity(intent);
+                }
+            });
+            //title
+            tmpPostTextViewHolder.TiTleItemView.setText(tmpInfo.Title);
+            //text
+            tmpPostTextViewHolder.TextItemView.setText(tmpInfo.Text);
+            //time
+            tmpPostTextViewHolder.TimeItemView.setText("发布于:"+tmpInfo.Time);
+            //subscribe
+            if (tmpInfo.isSubscribe == 1) {
+                tmpPostTextViewHolder.SubscribeButton.setText("取消关注");
+                tmpPostTextViewHolder.SubscribeButton.setOnClickListener(new Button.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        HttpRequestManager http = HttpRequestManager.getInstance(context);
+                        MyCallBack callBack = new MyCallBack(2);
+                        HashMap<String, String> data = new HashMap<>();
+                        data.put("userid", Integer.toString(UserInfo.getInstance().getUserid()));
+                        data.put("subscriberid", Integer.toString(tmpInfo.userid));
+                        http.requestAsyn("api/user/unsubscribe",1, data, callBack);
+                    }
+                });
+            }
+            else {
+                tmpPostTextViewHolder.SubscribeButton.setText("关注");
+                tmpPostTextViewHolder.SubscribeButton.setOnClickListener(new Button.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        HttpRequestManager http = HttpRequestManager.getInstance(context);
+                        MyCallBack callBack = new MyCallBack(3);
+                        HashMap<String, String> data = new HashMap<>();
+                        data.put("userid", Integer.toString(UserInfo.getInstance().getUserid()));
+                        data.put("subscriberid", Integer.toString(tmpInfo.userid));
+                        http.requestAsyn("api/user/subscribe",1, data, callBack);
+                    }
+                });
+            }
+            //block
+            if (tmpInfo.isBlock == 1) {
+                tmpPostTextViewHolder.BlockButton.setText("取消屏蔽");
+                tmpPostTextViewHolder.BlockButton.setOnClickListener(new Button.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        HttpRequestManager http = HttpRequestManager.getInstance(context);
+                        MyCallBack callBack = new MyCallBack(4);
+                        HashMap<String, String> data = new HashMap<>();
+                        data.put("userid", Integer.toString(UserInfo.getInstance().getUserid()));
+                        data.put("blockerid", Integer.toString(tmpInfo.userid));
+                        http.requestAsyn("api/user/unblock",1, data, callBack);
+                    }
+                });
+            }
+            else {
+                tmpPostTextViewHolder.BlockButton.setText("屏蔽");
+                tmpPostTextViewHolder.BlockButton.setOnClickListener(new Button.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        HttpRequestManager http = HttpRequestManager.getInstance(context);
+                        MyCallBack callBack = new MyCallBack(5);
+                        HashMap<String, String> data = new HashMap<>();
+                        data.put("userid", Integer.toString(UserInfo.getInstance().getUserid()));
+                        data.put("blockerid", Integer.toString(tmpInfo.userid));
+                        http.requestAsyn("api/user/block",1, data, callBack);
+                    }
+                });
+            }
+            //location
+            if (tmpInfo.Location.equals("")) {
+                tmpPostTextViewHolder.LocationItemView.setVisibility(View.GONE);
+            }
+            else {
+                tmpPostTextViewHolder.LocationItemView.setVisibility(View.VISIBLE);
+                tmpPostTextViewHolder.LocationItemView.setText(tmpInfo.Location);
+                tmpPostTextViewHolder.LocationItemView.setClickable(true);
+                tmpPostTextViewHolder.LocationItemView.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        // Parse the location and create the intent.
+                        Uri addressUri = Uri.parse("geo:0,0?q=" + tmpInfo.Location);
+                        Intent intent = new Intent(Intent.ACTION_VIEW, addressUri);
+
+                        // Start the activity.
+                        context.startActivity(intent);
+                    }
+                });
+            }
+            //Like
+            if (tmpInfo.catchLike.equals(false)) {
+                HttpRequestManager http = HttpRequestManager.getInstance(context);
+                MyCallBack callBack = new MyCallBack(6);
+                HashMap<String, String> data = new HashMap<>();
+                data.put("postid", Integer.toString(tmpInfo.postid));
+                http.requestAsyn("api/discover/collectlike",0, data, callBack);
+            }
+            if (tmpInfo.Like.size() == 0) {
+                tmpPostTextViewHolder.LikeItemView.setVisibility(View.GONE);
+            }
+            else {
+                tmpPostTextViewHolder.LikeItemView.setVisibility(View.VISIBLE);
+                tmpPostTextViewHolder.LikeItemView.setText(tmpInfo.LikeList2String());
+            }
+            //LikeButton
+            if (checkUserInLike(UserInfo.getInstance().getUserid(), tmpInfo.Like)) {
+                tmpPostTextViewHolder.LikeButton.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_baseline_thumb_up_24));
+                tmpPostTextViewHolder.LikeButton.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        HttpRequestManager http = HttpRequestManager.getInstance(context);
+                        MyCallBack callBack = new MyCallBack(7);
+                        HashMap<String, String> data = new HashMap<>();
+                        data.put("userid", Integer.toString(UserInfo.getInstance().getUserid()));
+                        data.put("postid", Integer.toString(tmpInfo.postid));
+                        http.requestAsyn("api/discover/dislike",1, data, callBack);
+                    }
+                });
+            }
+            else {
+                tmpPostTextViewHolder.LikeButton.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_outline_thumb_up_24));
+                tmpPostTextViewHolder.LikeButton.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        HttpRequestManager http = HttpRequestManager.getInstance(context);
+                        MyCallBack callBack = new MyCallBack(8);
+                        HashMap<String, String> data = new HashMap<>();
+                        data.put("userid", Integer.toString(UserInfo.getInstance().getUserid()));
+                        data.put("postid", Integer.toString(tmpInfo.postid));
+                        http.requestAsyn("api/discover/like",1, data, callBack);
+                    }
+                });
+            }
+            //ShareButton
+            tmpPostTextViewHolder.ShareButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String mimeType = "text/plain";
+                    String txt = "标题："+tmpInfo.Title + "\n"
+                            + "正文：" + tmpInfo.Text + "\n"
+                            + "发表时间：" + tmpInfo.Time + "\n";
+                    ShareCompat.IntentBuilder
+                            .from((Activity) context)
+                            .setType(mimeType)
+                            .setChooserTitle("Share this text with:")
+                            .setText(txt)
+                            .startChooser();
+                }
+            });
+            //CommmentButton
+            //TODO
+            tmpPostTextViewHolder.CommmentButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final EditText inputServer = new EditText(context);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("评论").setView(inputServer)
+                            .setNegativeButton("取消", null);
+                    builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            HttpRequestManager http = HttpRequestManager.getInstance(context);
+                            MyCallBack callBack = new MyCallBack(10);
+                            HashMap<String, String> data = new HashMap<>();
+                            data.put("userid", Integer.toString(UserInfo.getInstance().getUserid()));
+                            data.put("postid", Integer.toString(tmpInfo.postid));
+                            data.put("text", inputServer.getText().toString());
+                            http.requestAsyn("api/discover/comment",1, data, callBack);
+                        }
+                    });
+                    builder.show();
+                }
+            });
+            //Comment
+            if (tmpInfo.catchComment.equals(false)) {
+                HttpRequestManager http = HttpRequestManager.getInstance(context);
+                MyCallBack callBack = new MyCallBack(9);
+                HashMap<String, String> data = new HashMap<>();
+                data.put("postid", Integer.toString(tmpInfo.postid));
+                http.requestAsyn("api/discover/collectcomment",0, data, callBack);
+            }
+            if (tmpInfo.Comment.size()==0) {
+                tmpPostTextViewHolder.CommentRecyclerView.setVisibility(View.GONE);
+            }
+            else {
+                tmpPostTextViewHolder.CommentRecyclerView.setVisibility(View.VISIBLE);
+                tmpPostTextViewHolder.commentAdapter = new CommentAdapter(context, tmpInfo.Comment);
+                tmpPostTextViewHolder.CommentRecyclerView.setAdapter(tmpPostTextViewHolder.commentAdapter);
+                tmpPostTextViewHolder.CommentRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+            }
         }
         else if (holder instanceof ExpandViewHolder) {
             ExpandViewHolder tmpExpandViewHolder = (ExpandViewHolder) holder;
@@ -235,5 +589,12 @@ public class PostAdapter extends
     @Override
     public int getItemCount() {
         return mPost.size() + 1;
+    }
+
+    public boolean checkUserInLike(Integer Userid, LinkedList<LikeInfo> tmpLike) {
+        for(int i=0;i<tmpLike.size();i++) {
+            if (tmpLike.get(i).userid.equals(Userid)) return true;
+        }
+        return false;
     }
 }

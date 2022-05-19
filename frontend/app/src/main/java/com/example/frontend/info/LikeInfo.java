@@ -1,8 +1,8 @@
 package com.example.frontend.info;
 
 public class LikeInfo {
-    Integer userid;
-    String username;
+    public Integer userid;
+    public String username;
 
     public LikeInfo(Integer userid, String username) {
         this.userid = userid;

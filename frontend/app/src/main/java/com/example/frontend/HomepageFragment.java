@@ -75,6 +75,7 @@ public class HomepageFragment extends Fragment {
                             tmpInfo.getString("username"),
                             tmpInfo.getInteger("avatarid"),
                             tmpInfo.getString("avatarfilename"),
+                            tmpInfo.getString("intro"),
                             tmpInfo.getInteger("fileid"),
                             tmpInfo.getString("filename"),
                             tmpInfo.getString("title"),
@@ -84,10 +85,10 @@ public class HomepageFragment extends Fragment {
                             tmpInfo.getString("location"),
                             tmpInfo.getInteger("subscribe"),
                             tmpInfo.getInteger("block")));
-//                    postAdapter = new PostAdapter(context, postInfoLinkedList);
-//                    recyclerView.setAdapter(postAdapter);
-//                    recyclerView.setLayoutManager(new LinearLayoutManager(context));
                 }
+                postAdapter = new PostAdapter(context, postInfoLinkedList);
+                recyclerView.setAdapter(postAdapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(context));
             }
             Log.i("HomepageRelation", result.toString());
         }
@@ -197,7 +198,7 @@ public class HomepageFragment extends Fragment {
             data.put("subscribe", Integer.toString(0));
         }
         else {
-            data.put("subscribe", Integer.toString(0));
+            data.put("subscribe", Integer.toString(1));
         }
         http.requestAsyn("api/discover/get", 0, data, callback);
     }

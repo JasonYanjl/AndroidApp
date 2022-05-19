@@ -86,7 +86,7 @@ def discover_like(request):
             except:
                 pass
 
-        return JsonResponse({"Message": "success"})
+        return JsonResponse({"postid":post_id, "Message": "success"})
 
     else:
         return HttpResponse(json.dumps({"Message": "require POST"}),
@@ -118,7 +118,7 @@ def discover_dislike(request):
 
             NowLike.delete()
 
-        return JsonResponse({"Message": "success"})
+        return JsonResponse({"postid": post_id, "Message": "success"})
 
     else:
         return HttpResponse(json.dumps({"Message": "require POST"}),
@@ -155,7 +155,7 @@ def discover_collectlike(request):
             res.append({'userid': NowLiker.user_id,
                         'username': NowLiker.user_username})
 
-        return JsonResponse({"list": res})
+        return JsonResponse({"postid": post_id, "list": res})
 
     else:
         return HttpResponse(json.dumps({"Message": "require GET"}),
@@ -171,6 +171,7 @@ def discover_comment(request):
             UserId = request.POST.get("userid")
             post_id = request.POST.get("postid")
             text = request.POST.get("text")
+            post_id = int(post_id)
             NowUser = models.User.objects.get(user_id=UserId)
             NowPost = models.Post.objects.get(post_id=post_id)
         except:
@@ -195,7 +196,7 @@ def discover_comment(request):
         except:
             pass
 
-        return JsonResponse({"commentid": NowComment.comment_id})
+        return JsonResponse({"postid":post_id, "commentid": NowComment.comment_id})
 
     else:
         return HttpResponse(json.dumps({"Message": "require POST"}),
@@ -210,6 +211,7 @@ def discover_cancelcomment(request):
         try:
             UserId = request.POST.get("userid")
             comment_id = request.POST.get("commentid")
+            comment_id = int(comment_id)
             NowUser = models.User.objects.get(user_id=UserId)
             NowComment = models.Comment.objects.get(comment_id=comment_id)
         except:
@@ -223,7 +225,7 @@ def discover_cancelcomment(request):
                                 status=401)
         NowComment.delete()
 
-        return JsonResponse({"Message": "success"})
+        return JsonResponse({"commentid": comment_id, "Message": "success"})
 
     else:
         return HttpResponse(json.dumps({"Message": "require POST"}),
@@ -252,6 +254,7 @@ def discover_collectcomment(request):
                                 status=401)
 
         PastComment = models.Comment.objects.filter(comment_post_id=post_id)
+        PastComment = PastComment.order_by("-comment_time")
 
         res = []
 
@@ -265,7 +268,7 @@ def discover_collectcomment(request):
                         'text': NowComment.comment_text,
                         'time': time2str(NowComment.comment_time)})
 
-        return JsonResponse({"list": res})
+        return JsonResponse({"postid": post_id, "list": res})
 
     else:
         return HttpResponse(json.dumps({"Message": "require GET"}),

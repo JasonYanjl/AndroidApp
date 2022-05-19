@@ -1,13 +1,18 @@
 package com.example.frontend.info;
 
-public class CommentInfo {
-    Integer userid, commmentid;
-    String username, Text, Time;
+import com.example.frontend.SearchActivity;
 
-    public CommentInfo(Integer userid, String username, Integer commmentid, String Text, String Time) {
+public class CommentInfo {
+    public Integer userid, commentid, avatarid;
+    public String username, Text, Time, Intro;
+
+    public CommentInfo(Integer userid, String username, Integer avatarid, String Intro,
+                       Integer commentid, String Text, String Time) {
         this.userid = userid;
         this.username = username;
-        this.commmentid = commmentid;
+        this.avatarid = avatarid;
+        this.Intro = Intro;
+        this.commentid = commentid;
         this.Text = Text;
         this.Time = Time;
     }
