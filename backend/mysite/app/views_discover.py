@@ -259,6 +259,8 @@ def discover_collectcomment(request):
             NowCommenter = models.User.objects.get(user_id=NowComment.comment_user_id)
             res.append({'userid': NowCommenter.user_id,
                         'username': NowCommenter.user_username,
+                        'avatarid': NowCommenter.user_avatarid,
+                        'intro': NowCommenter.user_intro,
                         'commentid': NowComment.comment_id,
                         'text': NowComment.comment_text,
                         'time': time2str(NowComment.comment_time)})
@@ -373,6 +375,7 @@ def discover_get(request):
                              "username": NowPoster.user_username,
                                 "avatarid": NowPoster.user_avatarid,
                                 "avatarfilename": tmpAvatarFilename,
+                                "intro": NowPoster.user_intro,
                              "fileid": NowPost.post_file_id,
                                 "filename": filename,
                              "title": NowPost.post_title,
@@ -516,6 +519,7 @@ def discover_search(request):
                                 "username": NowPoster.user_username,
                                 "avatarid": NowPoster.user_avatarid,
                                 "avatarfilename": tmpAvatarFilename,
+                                "intro": NowPoster.user_intro,
                                 "fileid": NowPost.post_file_id,
                                 "filename": filename,
                                 "title": NowPost.post_title,
@@ -577,6 +581,7 @@ def discover_deatil(request):
                              "username": NowUser.user_username,
                              "avatarid": NowUser.user_avatarid,
                              "avatarfilename": tmpAvatarFilename,
+                             "intro": NowUser.user_intro,
                              "fileid": NowPost.post_file_id,
                              "filename": filename,
                              "title": NowPost.post_title,
