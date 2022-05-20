@@ -25,6 +25,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Frontend">
         <activity
+            android:name=".PhotoActivity"
+            android:exported="false" />
+        <activity
             android:name=".SearchActivity"
             android:exported="false" />
         <activity

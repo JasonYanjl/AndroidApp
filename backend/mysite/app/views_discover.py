@@ -31,7 +31,8 @@ def discover_post(request):
                               post_text=Text,
                               post_type=Type,
                               post_location=Location,
-                              post_cnt_like=0)
+                              post_cnt_like=0,
+                              post_time=int(round(time.time() * 1000)))
         NowPost.save()
 
         PastSubscribe = models.Subscribe.objects.filter(subscribe_subscriber_id=NowUser.user_id)

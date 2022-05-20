@@ -83,6 +83,17 @@
             android:text="TextView"
             android:textSize="16sp" />
 
+        <ImageView
+            android:id="@+id/imageViewImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:scaleType="fitXY"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_avatar" />
+
         <TextView
             android:id="@+id/textViewPlacePost"
             android:layout_width="match_parent"

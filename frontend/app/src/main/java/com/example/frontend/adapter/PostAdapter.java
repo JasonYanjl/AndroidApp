@@ -28,6 +28,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.frontend.AccountActivity;
 import com.example.frontend.AccountFragment;
+import com.example.frontend.PhotoActivity;
 import com.example.frontend.R;
 import com.example.frontend.SettingPasswordActivity;
 import com.example.frontend.info.CommentInfo;
@@ -98,6 +99,7 @@ public class PostAdapter extends
         public final ImageView AvatarImageView;
         public final Button SubscribeButton, BlockButton;
         public final ImageButton LikeButton, CommmentButton, ShareButton;
+        public final ImageView ImageViewImage;
         public CommentAdapter commentAdapter;
         final PostAdapter mAdapter;
 
@@ -127,6 +129,8 @@ public class PostAdapter extends
             ShareButton = itemView.findViewById(R.id.imageButtonShare);
 
             CommentRecyclerView = itemView.findViewById(R.id.recyclerViewComment);
+
+            ImageViewImage = itemView.findViewById(R.id.imageViewImage);
 
             this.mAdapter = adapter;
         }
@@ -267,6 +271,9 @@ public class PostAdapter extends
                 }
                 notifyDataSetChanged();
             }
+            else if (type==11) {
+                notifyDataSetChanged();
+            }
             Log.i("PostAdapter---",result.toString());
         }
 
@@ -309,6 +316,12 @@ public class PostAdapter extends
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
                                                       int viewType) {
         if (viewType == ITEM_TYPE0) {
+            // Inflate an item view.
+            View mItemView = mInflater.inflate(
+                    R.layout.item_post_text, parent, false);
+            return new PostTextViewHolder(mItemView, this);
+        }
+        if (viewType == ITEM_TYPE1) {
             // Inflate an item view.
             View mItemView = mInflater.inflate(
                     R.layout.item_post_text, parent, false);
@@ -517,7 +530,6 @@ public class PostAdapter extends
                 }
             });
             //CommmentButton
-            //TODO
             tmpPostTextViewHolder.CommmentButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -555,6 +567,46 @@ public class PostAdapter extends
                 tmpPostTextViewHolder.commentAdapter = new CommentAdapter(context, tmpInfo.Comment);
                 tmpPostTextViewHolder.CommentRecyclerView.setAdapter(tmpPostTextViewHolder.commentAdapter);
                 tmpPostTextViewHolder.CommentRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+            }
+            //image
+            if (mPost.get(position).Type.equals(ITEM_TYPE0)) {
+                tmpPostTextViewHolder.ImageViewImage.setVisibility(View.GONE);
+            }
+            else if (mPost.get(position).Type.equals(ITEM_TYPE1)) {
+                if (tmpInfo.fileid.equals(-1) || tmpInfo.filename.equals("")) {
+                    tmpPostTextViewHolder.ImageViewImage.setVisibility(View.GONE);
+                }
+                else {
+                    String filename = tmpInfo.filename;
+                    String fileAbsPath =  FileManager.getInstance().getUserFileAbsolutePath(context, "image")
+                            + "/" + filename;
+                    if (FileManager.getInstance().getUserFileExists(context, "image" + "/" + filename)) {
+                        // set image
+                        tmpPostTextViewHolder.ImageViewImage.setVisibility(View.VISIBLE);
+                        tmpPostTextViewHolder.ImageViewImage.setImageDrawable(Drawable.createFromPath(fileAbsPath));
+                        tmpPostTextViewHolder.ImageViewImage.setClickable(true);
+                        tmpPostTextViewHolder.ImageViewImage.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Log.i("click", "photo click");
+
+                                Intent intent = new Intent(context, PhotoActivity.class);
+                                intent.putExtra("fileAbsPath", fileAbsPath);
+                                context.startActivity(intent);
+                            }
+                        });
+                    }
+                    else {
+                        tmpPostTextViewHolder.ImageViewImage.setVisibility(View.GONE);
+
+                        String url = HttpRequestManager.getInstance(context).getBaseUrl() + "/api/file/download?fileid="
+                                + Integer.toString(tmpInfo.fileid);
+                        String destDir = FileManager.getInstance().getUserFileAbsolutePath(context, "image");
+                        MyCallBack callback = new MyCallBack(11);
+                        HttpRequestManager.getInstance(context).downLoadFile(url,filename,destDir,callback);
+                        Log.i("Download to", fileAbsPath);
+                    }
+                }
             }
         }
         else if (holder instanceof ExpandViewHolder) {
