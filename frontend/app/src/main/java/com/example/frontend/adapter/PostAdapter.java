@@ -4,8 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.media.MediaMetadata;
+import android.media.MediaMetadataRetriever;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +23,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -31,6 +39,7 @@ import com.example.frontend.AccountFragment;
 import com.example.frontend.PhotoActivity;
 import com.example.frontend.R;
 import com.example.frontend.SettingPasswordActivity;
+import com.example.frontend.VideoActivity;
 import com.example.frontend.info.CommentInfo;
 import com.example.frontend.info.LikeInfo;
 import com.example.frontend.info.PostInfo;
@@ -39,6 +48,9 @@ import com.example.frontend.info.UserInfo;
 import com.example.frontend.utils.FileManager;
 import com.example.frontend.utils.HttpRequestManager;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -321,8 +333,13 @@ public class PostAdapter extends
                     R.layout.item_post_text, parent, false);
             return new PostTextViewHolder(mItemView, this);
         }
-        if (viewType == ITEM_TYPE1) {
+        else if (viewType == ITEM_TYPE1) {
             // Inflate an item view.
+            View mItemView = mInflater.inflate(
+                    R.layout.item_post_text, parent, false);
+            return new PostTextViewHolder(mItemView, this);
+        }
+        else if (viewType == ITEM_TYPE2) {
             View mItemView = mInflater.inflate(
                     R.layout.item_post_text, parent, false);
             return new PostTextViewHolder(mItemView, this);
@@ -608,6 +625,55 @@ public class PostAdapter extends
                     }
                 }
             }
+            else if (mPost.get(position).Type.equals(ITEM_TYPE2)) {
+                if (tmpInfo.fileid.equals(-1) || tmpInfo.filename.equals("")) {
+                    tmpPostTextViewHolder.ImageViewImage.setVisibility(View.GONE);
+                }
+                else {
+                    String filename = tmpInfo.filename;
+                    String fileAbsPath =  FileManager.getInstance().getUserFileAbsolutePath(context, "video")
+                            + "/" + filename;
+                    if (FileManager.getInstance().getUserFileExists(context, "video" + "/" + filename)) {
+                        // set image
+                        try {
+                            Bitmap videoThumbnail = ThumbnailUtils.createVideoThumbnail(
+                                    fileAbsPath, MediaStore.Video.Thumbnails.MINI_KIND);
+                            if (videoThumbnail == null) {
+                                Log.e("NULL","videoThumbnail is null");
+                            }
+                            else {
+                                tmpPostTextViewHolder.ImageViewImage.setImageBitmap(videoThumbnail);
+                                tmpPostTextViewHolder.ImageViewImage.setVisibility(View.VISIBLE);
+                                tmpPostTextViewHolder.ImageViewImage.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Log.i("click", "video click");
+
+                                        Intent intent = new Intent(context, VideoActivity.class);
+                                        intent.putExtra("fileAbsPath", fileAbsPath);
+                                        context.startActivity(intent);
+                                    }
+                                });
+                            }
+                        }
+                        catch (Exception e) {
+                            Log.e("Error", "setGone");
+                            tmpPostTextViewHolder.ImageViewImage.setVisibility(View.GONE);
+                            notifyDataSetChanged();
+                        }
+                    }
+                    else {
+                        tmpPostTextViewHolder.ImageViewImage.setVisibility(View.GONE);
+
+                        String url = HttpRequestManager.getInstance(context).getBaseUrl() + "/api/file/download?fileid="
+                                + Integer.toString(tmpInfo.fileid);
+                        String destDir = FileManager.getInstance().getUserFileAbsolutePath(context, "video");
+                        MyCallBack callback = new MyCallBack(11);
+                        HttpRequestManager.getInstance(context).downLoadFile(url,filename,destDir,callback);
+                        Log.i("Download to", fileAbsPath);
+                    }
+                }
+            }
         }
         else if (holder instanceof ExpandViewHolder) {
             ExpandViewHolder tmpExpandViewHolder = (ExpandViewHolder) holder;
@@ -649,4 +715,5 @@ public class PostAdapter extends
         }
         return false;
     }
+
 }
