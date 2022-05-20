@@ -92,7 +92,19 @@
             android:layout_marginBottom="5dp"
             android:scaleType="fitXY"
             android:visibility="visible"
-            app:srcCompat="@drawable/ic_avatar" />
+            app:srcCompat="@drawable/load" />
+
+        <Button
+            android:id="@+id/buttonVoice"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="20dp"
+            android:gravity="left|center_vertical"
+            android:minWidth="150dp"
+            android:padding="10dp"
+            android:text="语音"
+            android:textSize="13dp" />
 
         <TextView
             android:id="@+id/textViewPlacePost"

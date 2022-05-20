@@ -1,5 +1,7 @@
 package com.example.frontend.adapter;
 
+import static java.lang.Math.max;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.MediaMetadata;
 import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Handler;
@@ -45,6 +48,7 @@ import com.example.frontend.info.LikeInfo;
 import com.example.frontend.info.PostInfo;
 import com.example.frontend.info.RelationInfo;
 import com.example.frontend.info.UserInfo;
+import com.example.frontend.recorder.Recorder;
 import com.example.frontend.utils.FileManager;
 import com.example.frontend.utils.HttpRequestManager;
 
@@ -109,7 +113,7 @@ public class PostAdapter extends
                 LocationItemView, TimeItemView, LikeItemView;
         public final RecyclerView CommentRecyclerView;
         public final ImageView AvatarImageView;
-        public final Button SubscribeButton, BlockButton;
+        public final Button SubscribeButton, BlockButton, ButtonVoice;
         public final ImageButton LikeButton, CommmentButton, ShareButton;
         public final ImageView ImageViewImage;
         public CommentAdapter commentAdapter;
@@ -139,6 +143,8 @@ public class PostAdapter extends
             LikeButton = itemView.findViewById(R.id.imageButtonLike);
             CommmentButton = itemView.findViewById(R.id.imageButtonComment);
             ShareButton = itemView.findViewById(R.id.imageButtonShare);
+
+            ButtonVoice = itemView.findViewById(R.id.buttonVoice);
 
             CommentRecyclerView = itemView.findViewById(R.id.recyclerViewComment);
 
@@ -340,6 +346,11 @@ public class PostAdapter extends
             return new PostTextViewHolder(mItemView, this);
         }
         else if (viewType == ITEM_TYPE2) {
+            View mItemView = mInflater.inflate(
+                    R.layout.item_post_text, parent, false);
+            return new PostTextViewHolder(mItemView, this);
+        }
+        else if (viewType == ITEM_TYPE3) {
             View mItemView = mInflater.inflate(
                     R.layout.item_post_text, parent, false);
             return new PostTextViewHolder(mItemView, this);
@@ -626,6 +637,9 @@ public class PostAdapter extends
                 }
             }
             else if (mPost.get(position).Type.equals(ITEM_TYPE2)) {
+                tmpPostTextViewHolder.ImageViewImage.setVisibility(View.GONE);
+            }
+            else if (mPost.get(position).Type.equals(ITEM_TYPE3)) {
                 if (tmpInfo.fileid.equals(-1) || tmpInfo.filename.equals("")) {
                     tmpPostTextViewHolder.ImageViewImage.setVisibility(View.GONE);
                 }
@@ -673,6 +687,58 @@ public class PostAdapter extends
                         Log.i("Download to", fileAbsPath);
                     }
                 }
+            }
+            //voice
+            if (mPost.get(position).Type.equals(ITEM_TYPE0)) {
+                tmpPostTextViewHolder.ButtonVoice.setVisibility(View.GONE);
+            }
+            else if (mPost.get(position).Type.equals(ITEM_TYPE1)) {
+                tmpPostTextViewHolder.ButtonVoice.setVisibility(View.GONE);
+            }
+            else if (mPost.get(position).Type.equals(ITEM_TYPE2)) {
+                if (tmpInfo.fileid.equals(-1) || tmpInfo.filename.equals("")) {
+                    tmpPostTextViewHolder.ButtonVoice.setVisibility(View.GONE);
+                }
+                else {
+                    String filename = tmpInfo.filename;
+                    String fileAbsPath =  FileManager.getInstance().getUserFileAbsolutePath(context, "voice")
+                            + "/" + filename;
+
+                    if (FileManager.getInstance().getUserFileExists(context, "voice" + "/" + filename)) {
+                        // set voice
+                        try{
+                            MediaPlayer mp = MediaPlayer.create(context, Uri.parse(fileAbsPath));
+                            if(mp!=null) {
+                                int duration = mp.getDuration();
+                                Log.e("duration", Integer.toString(duration));
+                                tmpPostTextViewHolder.ButtonVoice.getLayoutParams().width = max(250, duration / 10);
+                                tmpPostTextViewHolder.ButtonVoice.setText("语音" + String.valueOf(duration / 1000) + "秒");
+                            }
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                        tmpPostTextViewHolder.ButtonVoice.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Recorder.getInstance(context).play(fileAbsPath);
+                            }
+                        });
+                        tmpPostTextViewHolder.ButtonVoice.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        tmpPostTextViewHolder.ButtonVoice.setVisibility(View.GONE);
+
+                        String url = HttpRequestManager.getInstance(context).getBaseUrl() + "/api/file/download?fileid="
+                                + Integer.toString(tmpInfo.fileid);
+                        String destDir = FileManager.getInstance().getUserFileAbsolutePath(context, "voice");
+                        MyCallBack callback = new MyCallBack(11);
+                        HttpRequestManager.getInstance(context).downLoadFile(url,filename,destDir,callback);
+                        Log.i("Download to", fileAbsPath);
+                    }
+                }
+            }
+            else if (mPost.get(position).Type.equals(ITEM_TYPE3)) {
+                tmpPostTextViewHolder.ButtonVoice.setVisibility(View.GONE);
             }
         }
         else if (holder instanceof ExpandViewHolder) {
