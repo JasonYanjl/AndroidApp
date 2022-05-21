@@ -711,8 +711,8 @@ public class PostAdapter extends
                             if(mp!=null) {
                                 int duration = mp.getDuration();
                                 Log.e("duration", Integer.toString(duration));
-                                tmpPostTextViewHolder.ButtonVoice.getLayoutParams().width = max(250, duration / 10);
-                                tmpPostTextViewHolder.ButtonVoice.setText("语音" + String.valueOf(duration / 1000) + "秒");
+                                tmpPostTextViewHolder.ButtonVoice.getLayoutParams().width = Math.max(250, duration / 10);
+                                tmpPostTextViewHolder.ButtonVoice.setText("语音" + Integer.toString(duration / 1000) + "秒");
                             }
                         }catch(Exception e){
                             e.printStackTrace();

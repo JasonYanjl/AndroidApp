@@ -104,7 +104,7 @@
             android:minWidth="150dp"
             android:padding="10dp"
             android:text="语音"
-            android:textSize="13dp" />
+            android:textSize="14dp" />
 
         <TextView
             android:id="@+id/textViewPlacePost"

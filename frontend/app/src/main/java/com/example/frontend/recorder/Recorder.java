@@ -131,7 +131,7 @@ public class Recorder {
         Toast.makeText(context,
                 String.format("录音完成，正在发送", now.toString()),
                 Toast.LENGTH_SHORT).show();
-        Log.e("wenjianming",now.toString());
+        Log.e("Date",now.toString());
         while(lock){
             Thread.sleep(100);
         }
@@ -280,7 +280,7 @@ public class Recorder {
             if(!setNewPlayer(musicFileName)) return;
         }
         // play music
-        Log.i("zhengque","zhengque");
+        Log.i("status","correct");
         player.start();
     }
 
