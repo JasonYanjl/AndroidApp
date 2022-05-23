@@ -554,6 +554,89 @@ def discover_search(request):
 
 @csrf_exempt
 # @LoginCheck
+def discover_allpost(request):
+    if (request.method == "GET"):
+        user_id = request.GET.get('userid')
+        poster_id = request.GET.get('posterid')
+
+        if user_id is None or poster_id is None:
+            return HttpResponse(json.dumps({"Message": "Error Params"}),
+                                content_type="application/json",
+                                status=401)
+
+        try:
+            user_id = int(user_id)
+            poster_id = int(poster_id)
+            NowUser = models.User.objects.get(user_id=user_id)
+            NowPoster = models.User.objects.get(user_id=poster_id)
+        except:
+            return HttpResponse(json.dumps({"Message": "Error Params"}),
+                                content_type="application/json",
+                                status=401)
+
+        NowRes = models.Post.objects.filter(post_user_id=NowPoster.user_id)
+        NowRes = NowRes.order_by("-post_time")
+
+        res = []
+
+        if NowRes is not None:
+            for NowPost in NowRes:
+                try:
+                    tmpSub = 0
+                    tmpBlock = 0
+                    PastSubscribe = models.Subscribe.objects.filter(subscribe_user_id=NowUser.user_id,
+                                                                    subscribe_subscriber_id=NowPoster.user_id)
+                    if PastSubscribe.count() > 0:
+                        tmpSub = 1
+                    PastBlock = models.Block.objects.filter(block_user_id=NowUser.user_id,
+                                                            block_blocker_id=NowPoster.user_id)
+                    if PastBlock.count() > 0:
+                        tmpBlock = 1
+
+                    tmpAvatarFilename = ""
+
+                    try:
+                        NowFile = models.Doc.objects.get(doc_id=NowPoster.user_avatarid)
+                        tmpAvatarFilename = NowFile.doc_name
+                    except:
+                        pass
+
+                    filename = ""
+
+                    try:
+                        NowFile = models.Doc.objects.get(doc_id=NowPost.post_file_id)
+                        filename = NowFile.doc_name
+                    except:
+                        pass
+
+                    res.append({"postid": NowPost.post_id,
+                                "userid": NowPoster.user_id,
+                                "username": NowPoster.user_username,
+                                "avatarid": NowPoster.user_avatarid,
+                                "avatarfilename": tmpAvatarFilename,
+                                "intro": NowPoster.user_intro,
+                                "fileid": NowPost.post_file_id,
+                                "filename": filename,
+                                "title": NowPost.post_title,
+                                "text": NowPost.post_text,
+                                "type": NowPost.post_type,
+                                "time": time2str(NowPost.post_time),
+                                "location": NowPost.post_location,
+                                "subscribe": tmpSub,
+                                "block": tmpBlock})
+                except:
+                    pass
+
+        return JsonResponse({"list": res})
+
+    else:
+        return HttpResponse(json.dumps({"Message": "require GET"}),
+                            content_type="application/json",
+                            status=401)
+
+
+@csrf_exempt
+# @LoginCheck
 def discover_deatil(request):
     if (request.method == "GET"):
         post_id = request.GET.get('postid')

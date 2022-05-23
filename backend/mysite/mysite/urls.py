@@ -62,6 +62,7 @@ urlpatterns = [
     path('api/discover/collectcomment', views_discover.discover_collectcomment, name="DiscoverCollectcomment"),
     path('api/discover/get', views_discover.discover_get, name="DiscoverGet"),
     path('api/discover/search', views_discover.discover_search, name="DiscoverSearch"),
+    path('api/discover/allpost', views_discover.discover_allpost, name="DiscoverAllPost"),
     path('api/discover/detail', views_discover.discover_deatil, name="DiscoverDetail"),
 
 ]
