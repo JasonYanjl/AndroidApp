@@ -2,12 +2,15 @@ package com.example.frontend;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioButton;
 
 import butterknife.ButterKnife;
@@ -20,6 +23,12 @@ public class SearchActivity extends AppCompatActivity {
     RadioButton radioButtonTypeAll, radioButtonType0, radioButtonType1, radioButtonType2, radioButtonType3;
     RadioButton radioButtonSortTime, radioButtonSortLike;
 
+    EditText editTextSearch;
+    Button buttonButton;
+    RecyclerView recyclerViewSearchResult;
+
+    String searchText = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +39,11 @@ public class SearchActivity extends AppCompatActivity {
         tmpBar.setDisplayShowHomeEnabled(true);
         tmpBar.setDisplayHomeAsUpEnabled(true);
 
-        setSearchContent();
+        searchText = "";
+        setTitle("搜索");
+        context = getApplicationContext();
+
+        setSearchChoice();
     }
 
     @Override
@@ -44,9 +57,34 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void setSearchContent(){
+        setContentView(R.layout.activity_search_result);
+        radioButtonTitle = null;
+        radioButtonText = null;
+        radioButtonUsername = null;
+        radioButtonTypeAll = null;
+        radioButtonType0 = null;
+        radioButtonType1 = null;
+        radioButtonType2 = null;
+        radioButtonType3 = null;
+        radioButtonSortTime = null;
+        radioButtonSortLike = null;
+
+        editTextSearch = findViewById(R.id.editTextSearchResult);
+        buttonButton = null;
+        recyclerViewSearchResult = findViewById(R.id.recyclerViewSearchResult);
+
+        editTextSearch.setText(searchText);
+
+        editTextSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setSearchChoice();
+            }
+        });
+    }
+
+    private void setSearchChoice(){
         setContentView(R.layout.activity_search);
-        setTitle("搜索");
-        context = getApplicationContext();
         radioButtonTitle = findViewById(R.id.radioButtonTitle);
         radioButtonText = findViewById(R.id.radioButtonText);
         radioButtonUsername = findViewById(R.id.radioButtonUsername);
@@ -57,6 +95,20 @@ public class SearchActivity extends AppCompatActivity {
         radioButtonType3 = findViewById(R.id.radioButtonType3);
         radioButtonSortTime = findViewById(R.id.radioButtonSortTime);
         radioButtonSortLike = findViewById(R.id.radioButtonSortLike);
+
+        editTextSearch = findViewById(R.id.editTextSearch);
+        buttonButton = findViewById(R.id.buttonSearch);
+        recyclerViewSearchResult = null;
+
+        buttonButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchText = editTextSearch.getText().toString();
+                setSearchContent();
+            }
+        });
+
+        editTextSearch.setText(searchText);
 
         radioButtonTitle.setOnClickListener(new RadioButton.OnClickListener(){
             @Override

@@ -31,6 +31,7 @@
                 android:drawablePadding="10dp"
                 android:hint="搜索"
                 android:inputType="textPersonName"
+                android:singleLine="true"
                 app:layout_constraintEnd_toStartOf="@id/buttonSearch"
                 app:layout_constraintStart_toStartOf="parent" />
 
