@@ -19,8 +19,10 @@
         android:layout_marginTop="96dp"
         android:layout_marginEnd="24dp"
 
+        android:autofillHints=""
         android:hint="用户名"
         android:inputType="text"
+        android:minHeight="48dp"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,6 +38,7 @@
         android:hint="密码"
         android:imeOptions="actionDone"
         android:inputType="textPassword"
+        android:minHeight="48dp"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +54,10 @@
 
         android:hint="邮箱"
         android:imeOptions="actionDone"
+        android:inputType="TODO"
+        android:minHeight="48dp"
         android:selectAllOnFocus="true"
+        android:textColorHint="#757575"
         app:layout_constraintEnd_toStartOf="@+id/get_code"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password" />
@@ -63,7 +69,7 @@
         android:layout_gravity="start"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginBottom="64dp"
 
         android:text="获取验证码"
@@ -71,7 +77,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/mail"
         app:layout_constraintTop_toTopOf="@+id/password"
-        app:layout_constraintVertical_bias="0.084" />
+        app:layout_constraintVertical_bias="0.091" />
 
     <EditText
         android:id="@+id/code"
@@ -79,10 +85,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="24dp"
 
         android:hint="验证码"
         android:imeOptions="actionDone"
+        android:minHeight="48dp"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
