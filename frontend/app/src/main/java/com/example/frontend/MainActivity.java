@@ -98,35 +98,27 @@ public class MainActivity extends AppCompatActivity {
         mailEdit = null;
         codeEdit = null;
 
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                username = usernameEdit.getText().toString();
-                if(username.equals("")){
-                    Toast.makeText(getApplicationContext(), "请输入用户名",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                password = passwordEdit.getText().toString();
-                if(password.equals("")){
-                    Toast.makeText(getApplicationContext(), "请输入密码",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                HttpRequestManager http = HttpRequestManager.getInstance(getApplicationContext());
-                MyCallBack callBack = new MyCallBack(1);
-                HashMap<String, String> data = new HashMap<>();
-                data.put("username", username);
-                data.put("password", password);
-                http.requestAsyn("api/user/login",1, data, callBack);
+        login.setOnClickListener(v -> {
+            username = usernameEdit.getText().toString();
+            if(username.equals("")){
+                Toast.makeText(getApplicationContext(), "请输入用户名",
+                        Toast.LENGTH_SHORT).show();
+                return;
             }
-        });
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setRegisterContent();
+            password = passwordEdit.getText().toString();
+            if(password.equals("")){
+                Toast.makeText(getApplicationContext(), "请输入密码",
+                        Toast.LENGTH_SHORT).show();
+                return;
             }
+            HttpRequestManager http = HttpRequestManager.getInstance(getApplicationContext());
+            MyCallBack callBack = new MyCallBack(1);
+            HashMap<String, String> data = new HashMap<>();
+            data.put("username", username);
+            data.put("password", password);
+            http.requestAsyn("api/user/login",1, data, callBack);
         });
+        register.setOnClickListener(v -> setRegisterContent());
     }
 
     private void setRegisterContent(){
@@ -142,78 +134,67 @@ public class MainActivity extends AppCompatActivity {
         register = findViewById(R.id.register);
         getcode = findViewById(R.id.get_code);
 
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setLoginContent();
+        login.setOnClickListener(v -> setLoginContent());
+
+        getcode.setOnClickListener(v -> {
+            username = usernameEdit.getText().toString();
+            if(username.equals("")){
+                Toast.makeText(getApplicationContext(), "请输入用户名",
+                        Toast.LENGTH_SHORT).show();
+                return;
             }
+            password = passwordEdit.getText().toString();
+            if(password.equals("")){
+                Toast.makeText(getApplicationContext(), "请输入密码",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            mail = mailEdit.getText().toString();
+            if(mail.equals("")){
+                Toast.makeText(getApplicationContext(), "请输入邮箱",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            HttpRequestManager http = HttpRequestManager.getInstance(getApplicationContext());
+            MyCallBack callBack = new MyCallBack(2);
+            HashMap<String, String> data = new HashMap<>();
+            data.put("username", username);
+            data.put("password", password);
+            data.put("mail", mail);
+            http.requestAsyn("api/register",1, data, callBack);
         });
 
-        getcode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                username = usernameEdit.getText().toString();
-                if(username.equals("")){
-                    Toast.makeText(getApplicationContext(), "请输入用户名",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                password = passwordEdit.getText().toString();
-                if(password.equals("")){
-                    Toast.makeText(getApplicationContext(), "请输入密码",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                mail = mailEdit.getText().toString();
-                if(mail.equals("")){
-                    Toast.makeText(getApplicationContext(), "请输入邮箱",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                HttpRequestManager http = HttpRequestManager.getInstance(getApplicationContext());
-                MyCallBack callBack = new MyCallBack(2);
-                HashMap<String, String> data = new HashMap<>();
-                data.put("username", username);
-                data.put("password", password);
-                data.put("mail", mail);
-                http.requestAsyn("api/register",1, data, callBack);
+        register.setOnClickListener(v -> {
+            username = usernameEdit.getText().toString();
+            if(username.equals("")){
+                Toast.makeText(getApplicationContext(), "请输入用户名",
+                        Toast.LENGTH_SHORT).show();
+                return;
             }
-        });
-
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                username = usernameEdit.getText().toString();
-                if(username.equals("")){
-                    Toast.makeText(getApplicationContext(), "请输入用户名",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                password = passwordEdit.getText().toString();
-                if(password.equals("")){
-                    Toast.makeText(getApplicationContext(), "请输入密码",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                mail = mailEdit.getText().toString();
-                if(mail.equals("")){
-                    Toast.makeText(getApplicationContext(), "请输入邮箱",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                checkcode = codeEdit.getText().toString();
-                if(checkcode.equals("")){
-                    Toast.makeText(getApplicationContext(), "请输入验证码",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                HttpRequestManager http = HttpRequestManager.getInstance(getApplicationContext());
-                MyCallBack callBack = new MyCallBack(3);
-                HashMap<String, String> data = new HashMap<>();
-                data.put("mail", mail);
-                data.put("verification", checkcode);
-                http.requestAsyn("api/register/verify",1, data, callBack);
+            password = passwordEdit.getText().toString();
+            if(password.equals("")){
+                Toast.makeText(getApplicationContext(), "请输入密码",
+                        Toast.LENGTH_SHORT).show();
+                return;
             }
+            mail = mailEdit.getText().toString();
+            if(mail.equals("")){
+                Toast.makeText(getApplicationContext(), "请输入邮箱",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            checkcode = codeEdit.getText().toString();
+            if(checkcode.equals("")){
+                Toast.makeText(getApplicationContext(), "请输入验证码",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            HttpRequestManager http = HttpRequestManager.getInstance(getApplicationContext());
+            MyCallBack callBack = new MyCallBack(3);
+            HashMap<String, String> data = new HashMap<>();
+            data.put("mail", mail);
+            data.put("verification", checkcode);
+            http.requestAsyn("api/register/verify",1, data, callBack);
         });
     }
 

@@ -51,8 +51,7 @@ public class HomepageFragment extends Fragment {
 
     // TODO: Rename and change types and number of parameters
     public static HomepageFragment newInstance() {
-        HomepageFragment fragment = new HomepageFragment();
-        return fragment;
+        return new HomepageFragment();
     }
 
     public class MyCallBack implements HttpRequestManager.ReqCallBack {
@@ -113,70 +112,55 @@ public class HomepageFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_homepage, container, false);
-        searchText = (EditText) root.findViewById(R.id.search_view);
-        radioButtonTime = (RadioButton) root.findViewById(R.id.radioButtonTime);
-        radioButtonLike = (RadioButton) root.findViewById(R.id.radioButtonLike);
-        radioButtonAll = (RadioButton) root.findViewById(R.id.radioButtonAll);
-        radioButtonFollow = (RadioButton) root.findViewById(R.id.radioButtonFollow);
-        recyclerView = (RecyclerView) root.findViewById(R.id.recyclerViewHome);
+        searchText = root.findViewById(R.id.search_view);
+        radioButtonTime =  root.findViewById(R.id.radioButtonTime);
+        radioButtonLike =  root.findViewById(R.id.radioButtonLike);
+        radioButtonAll =  root.findViewById(R.id.radioButtonAll);
+        radioButtonFollow =  root.findViewById(R.id.radioButtonFollow);
+        recyclerView =  root.findViewById(R.id.recyclerViewHome);
         context = this.getActivity();
 
         UpdateRecyclerView();
 
-        searchText.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Log.i("click", "search click");
-                Intent intent = new Intent(getActivity(), SearchActivity.class);
-                startActivity(intent);
+        searchText.setOnClickListener(view -> {
+            Log.i("click", "search click");
+            Intent intent = new Intent(getActivity(), SearchActivity.class);
+            startActivity(intent);
+        });
+
+        radioButtonTime.setOnClickListener(view -> {
+            Log.i("click", "radioTime click");
+            if (radioButtonLike.isChecked()) {
+                radioButtonTime.setChecked(true);
+                radioButtonLike.setChecked(false);
+                UpdateRecyclerView();
             }
         });
 
-        radioButtonTime.setOnClickListener(new RadioButton.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Log.i("click", "radioTime click");
-                if (radioButtonLike.isChecked()) {
-                    radioButtonTime.setChecked(true);
-                    radioButtonLike.setChecked(false);
-                    UpdateRecyclerView();
-                }
+        radioButtonLike.setOnClickListener(view -> {
+            Log.i("click", "radioLike click");
+            if (radioButtonTime.isChecked()) {
+                radioButtonTime.setChecked(false);
+                radioButtonLike.setChecked(true);
+                UpdateRecyclerView();
             }
         });
 
-        radioButtonLike.setOnClickListener(new RadioButton.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Log.i("click", "radioLike click");
-                if (radioButtonTime.isChecked()) {
-                    radioButtonTime.setChecked(false);
-                    radioButtonLike.setChecked(true);
-                    UpdateRecyclerView();
-                }
+        radioButtonAll.setOnClickListener(view -> {
+            Log.i("click", "radioAll click");
+            if (radioButtonFollow.isChecked()) {
+                radioButtonAll.setChecked(true);
+                radioButtonFollow.setChecked(false);
+                UpdateRecyclerView();
             }
         });
 
-        radioButtonAll.setOnClickListener(new RadioButton.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Log.i("click", "radioAll click");
-                if (radioButtonFollow.isChecked()) {
-                    radioButtonAll.setChecked(true);
-                    radioButtonFollow.setChecked(false);
-                    UpdateRecyclerView();
-                }
-            }
-        });
-
-        radioButtonFollow.setOnClickListener(new RadioButton.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Log.i("click", "radioFollow click");
-                if (radioButtonAll.isChecked()) {
-                    radioButtonAll.setChecked(false);
-                    radioButtonFollow.setChecked(true);
-                    UpdateRecyclerView();
-                }
+        radioButtonFollow.setOnClickListener(view -> {
+            Log.i("click", "radioFollow click");
+            if (radioButtonAll.isChecked()) {
+                radioButtonAll.setChecked(false);
+                radioButtonFollow.setChecked(true);
+                UpdateRecyclerView();
             }
         });
 

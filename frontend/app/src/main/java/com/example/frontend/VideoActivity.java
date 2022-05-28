@@ -25,6 +25,7 @@ public class VideoActivity extends AppCompatActivity {
 
         // set back button
         ActionBar tmpBar = getSupportActionBar();
+        assert tmpBar != null;
         tmpBar.setHomeButtonEnabled(true);
         tmpBar.setDisplayShowHomeEnabled(true);
         tmpBar.setDisplayHomeAsUpEnabled(true);

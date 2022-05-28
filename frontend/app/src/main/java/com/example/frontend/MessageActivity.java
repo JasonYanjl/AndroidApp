@@ -32,9 +32,9 @@ public class MessageActivity extends AppCompatActivity implements DateFormatter.
     private MessagesListAdapter messagesAdapter;
     ArrayList<Message> arrayList;
 
-    private static Handler mHandler = new Handler(Looper.getMainLooper());
+    private static final Handler mHandler = new Handler(Looper.getMainLooper());
 
-    private Runnable mTimeCounterRunnable = new Runnable() {
+    private final Runnable mTimeCounterRunnable = new Runnable() {
         @Override
         public void run() {
             Log.i("更新通知页面", "+1");
@@ -52,6 +52,7 @@ public class MessageActivity extends AppCompatActivity implements DateFormatter.
 
         // set back button
         ActionBar tmpBar = getSupportActionBar();
+        assert tmpBar != null;
         tmpBar.setHomeButtonEnabled(true);
         tmpBar.setDisplayShowHomeEnabled(true);
         tmpBar.setDisplayHomeAsUpEnabled(true);

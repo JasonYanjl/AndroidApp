@@ -35,6 +35,7 @@ public class SearchActivity extends AppCompatActivity {
 
         // set back button
         ActionBar tmpBar = getSupportActionBar();
+        assert tmpBar != null;
         tmpBar.setHomeButtonEnabled(true);
         tmpBar.setDisplayShowHomeEnabled(true);
         tmpBar.setDisplayHomeAsUpEnabled(true);
@@ -75,12 +76,7 @@ public class SearchActivity extends AppCompatActivity {
 
         editTextSearch.setText(searchText);
 
-        editTextSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setSearchChoice();
-            }
-        });
+        editTextSearch.setOnClickListener(v -> setSearchChoice());
     }
 
     private void setSearchChoice(){
@@ -100,111 +96,78 @@ public class SearchActivity extends AppCompatActivity {
         buttonButton = findViewById(R.id.buttonSearch);
         recyclerViewSearchResult = null;
 
-        buttonButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchText = editTextSearch.getText().toString();
-                setSearchContent();
-            }
+        buttonButton.setOnClickListener(v -> {
+            searchText = editTextSearch.getText().toString();
+            setSearchContent();
         });
 
         editTextSearch.setText(searchText);
 
-        radioButtonTitle.setOnClickListener(new RadioButton.OnClickListener(){
-            @Override
-            public void onClick(View view) {
+        radioButtonTitle.setOnClickListener(view -> {
 
-                radioButtonTitle.setChecked(true);
-                radioButtonText.setChecked(false);
-                radioButtonUsername.setChecked(false);
-            }
+            radioButtonTitle.setChecked(true);
+            radioButtonText.setChecked(false);
+            radioButtonUsername.setChecked(false);
         });
-        radioButtonText.setOnClickListener(new RadioButton.OnClickListener(){
-            @Override
-            public void onClick(View view) {
+        radioButtonText.setOnClickListener(view -> {
 
-                radioButtonTitle.setChecked(false);
-                radioButtonText.setChecked(true);
-                radioButtonUsername.setChecked(false);
-            }
+            radioButtonTitle.setChecked(false);
+            radioButtonText.setChecked(true);
+            radioButtonUsername.setChecked(false);
         });
-        radioButtonUsername.setOnClickListener(new RadioButton.OnClickListener(){
-            @Override
-            public void onClick(View view) {
+        radioButtonUsername.setOnClickListener(view -> {
 
-                radioButtonTitle.setChecked(false);
-                radioButtonText.setChecked(false);
-                radioButtonUsername.setChecked(true);
-            }
+            radioButtonTitle.setChecked(false);
+            radioButtonText.setChecked(false);
+            radioButtonUsername.setChecked(true);
         });
-        radioButtonTypeAll.setOnClickListener(new RadioButton.OnClickListener(){
-            @Override
-            public void onClick(View view) {
+        radioButtonTypeAll.setOnClickListener(view -> {
 
-                radioButtonTypeAll.setChecked(true);
-                radioButtonType0.setChecked(false);
-                radioButtonType1.setChecked(false);
-                radioButtonType2.setChecked(false);
-                radioButtonType3.setChecked(false);
-            }
+            radioButtonTypeAll.setChecked(true);
+            radioButtonType0.setChecked(false);
+            radioButtonType1.setChecked(false);
+            radioButtonType2.setChecked(false);
+            radioButtonType3.setChecked(false);
         });
-        radioButtonType0.setOnClickListener(new RadioButton.OnClickListener(){
-            @Override
-            public void onClick(View view) {
+        radioButtonType0.setOnClickListener(view -> {
 
-                radioButtonTypeAll.setChecked(false);
-                radioButtonType0.setChecked(true);
-                radioButtonType1.setChecked(false);
-                radioButtonType2.setChecked(false);
-                radioButtonType3.setChecked(false);
-            }
+            radioButtonTypeAll.setChecked(false);
+            radioButtonType0.setChecked(true);
+            radioButtonType1.setChecked(false);
+            radioButtonType2.setChecked(false);
+            radioButtonType3.setChecked(false);
         });
-        radioButtonType1.setOnClickListener(new RadioButton.OnClickListener(){
-            @Override
-            public void onClick(View view) {
+        radioButtonType1.setOnClickListener(view -> {
 
-                radioButtonTypeAll.setChecked(false);
-                radioButtonType0.setChecked(false);
-                radioButtonType1.setChecked(true);
-                radioButtonType2.setChecked(false);
-                radioButtonType3.setChecked(false);
-            }
+            radioButtonTypeAll.setChecked(false);
+            radioButtonType0.setChecked(false);
+            radioButtonType1.setChecked(true);
+            radioButtonType2.setChecked(false);
+            radioButtonType3.setChecked(false);
         });
-        radioButtonType2.setOnClickListener(new RadioButton.OnClickListener(){
-            @Override
-            public void onClick(View view) {
+        radioButtonType2.setOnClickListener(view -> {
 
-                radioButtonTypeAll.setChecked(false);
-                radioButtonType0.setChecked(false);
-                radioButtonType1.setChecked(false);
-                radioButtonType2.setChecked(true);
-                radioButtonType3.setChecked(false);
-            }
+            radioButtonTypeAll.setChecked(false);
+            radioButtonType0.setChecked(false);
+            radioButtonType1.setChecked(false);
+            radioButtonType2.setChecked(true);
+            radioButtonType3.setChecked(false);
         });
-        radioButtonType3.setOnClickListener(new RadioButton.OnClickListener(){
-            @Override
-            public void onClick(View view) {
+        radioButtonType3.setOnClickListener(view -> {
 
-                radioButtonTypeAll.setChecked(false);
-                radioButtonType0.setChecked(false);
-                radioButtonType1.setChecked(false);
-                radioButtonType2.setChecked(false);
-                radioButtonType3.setChecked(true);
-            }
+            radioButtonTypeAll.setChecked(false);
+            radioButtonType0.setChecked(false);
+            radioButtonType1.setChecked(false);
+            radioButtonType2.setChecked(false);
+            radioButtonType3.setChecked(true);
         });
-        radioButtonSortTime.setOnClickListener(new RadioButton.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                radioButtonSortTime.setChecked(true);
-                radioButtonSortLike.setChecked(false);
-            }
+        radioButtonSortTime.setOnClickListener(view -> {
+            radioButtonSortTime.setChecked(true);
+            radioButtonSortLike.setChecked(false);
         });
-        radioButtonSortLike.setOnClickListener(new RadioButton.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                radioButtonSortTime.setChecked(false);
-                radioButtonSortLike.setChecked(true);
-            }
+        radioButtonSortLike.setOnClickListener(view -> {
+            radioButtonSortTime.setChecked(false);
+            radioButtonSortLike.setChecked(true);
         });
     }
 }

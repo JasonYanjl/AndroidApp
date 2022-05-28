@@ -69,6 +69,7 @@ public class SettingPasswordActivity extends AppCompatActivity {
 
         // set back button
         ActionBar tmpBar = getSupportActionBar();
+        assert tmpBar != null;
         tmpBar.setHomeButtonEnabled(true);
         tmpBar.setDisplayShowHomeEnabled(true);
         tmpBar.setDisplayHomeAsUpEnabled(true);
@@ -79,32 +80,29 @@ public class SettingPasswordActivity extends AppCompatActivity {
         editTextNew = findViewById(R.id.editTextNewPassword);
         buttonSubmit = findViewById(R.id.buttonSubmit2);
 
-        buttonSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("click", "submit click");
+        buttonSubmit.setOnClickListener(v -> {
+            Log.i("click", "submit click");
 
-                EditOld = editTextOld.getText().toString();
-                EditNew = editTextNew.getText().toString();
-                if (EditOld.equals("")) {
-                    Toast.makeText(context,
-                            "请输入旧密码",
-                            Toast.LENGTH_SHORT).show();
-                }
-                else if (EditNew.equals("")) {
-                    Toast.makeText(context,
-                            "请输入新密码",
-                            Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    HttpRequestManager http = HttpRequestManager.getInstance(context);
-                    MyCallBack callBack = new MyCallBack(1);
-                    HashMap<String, String> data = new HashMap<>();
-                    data.put("userid", Integer.toString(UserInfo.getInstance().getUserid()));
-                    data.put("oldpassword", EditOld);
-                    data.put("newpassword", EditNew);
-                    http.requestAsyn("api/user/passwd",1, data, callBack);
-                }
+            EditOld = editTextOld.getText().toString();
+            EditNew = editTextNew.getText().toString();
+            if (EditOld.equals("")) {
+                Toast.makeText(context,
+                        "请输入旧密码",
+                        Toast.LENGTH_SHORT).show();
+            }
+            else if (EditNew.equals("")) {
+                Toast.makeText(context,
+                        "请输入新密码",
+                        Toast.LENGTH_SHORT).show();
+            }
+            else {
+                HttpRequestManager http = HttpRequestManager.getInstance(context);
+                MyCallBack callBack = new MyCallBack(1);
+                HashMap<String, String> data = new HashMap<>();
+                data.put("userid", Integer.toString(UserInfo.getInstance().getUserid()));
+                data.put("oldpassword", EditOld);
+                data.put("newpassword", EditNew);
+                http.requestAsyn("api/user/passwd",1, data, callBack);
             }
         });
     }

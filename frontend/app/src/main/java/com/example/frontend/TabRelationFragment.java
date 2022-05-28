@@ -84,8 +84,7 @@ public class TabRelationFragment extends Fragment {
     }
 
     public static TabRelationFragment newInstance() {
-        TabRelationFragment fragment = new TabRelationFragment();
-        return fragment;
+        return new TabRelationFragment();
     }
 
     public void setType(int Type) {

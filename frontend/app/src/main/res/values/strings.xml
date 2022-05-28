@@ -6,4 +6,6 @@
     <string name="main_passwordhint">密码</string>
     <string name="main_loginbtn">登录</string>
     <string name="main_registerbtn">还没有账号？去注册</string>
+    <string name="post_edittab">编辑</string>
+    <string name="post_drafttab">草稿</string>
 </resources>

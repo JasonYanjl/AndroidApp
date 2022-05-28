@@ -26,8 +26,7 @@ public class RelationFragment extends Fragment {
     }
 
     public static RelationFragment newInstance() {
-        RelationFragment fragment = new RelationFragment();
-        return fragment;
+        return new RelationFragment();
     }
 
     @Override
@@ -41,7 +40,7 @@ public class RelationFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_relation, container, false);
 
-        tabLayout = (TabLayout)root.findViewById(R.id.tablayout);
+        tabLayout = root.findViewById(R.id.tablayout);
 
         childFragment = TabRelationFragment.newInstance();
         childFragment.setType(0);

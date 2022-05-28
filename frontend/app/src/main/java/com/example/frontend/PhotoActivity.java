@@ -21,11 +21,12 @@ public class PhotoActivity extends AppCompatActivity {
         setTitle("图片详情");
         // set back button
         ActionBar tmpBar = getSupportActionBar();
+        assert tmpBar != null;
         tmpBar.setHomeButtonEnabled(true);
         tmpBar.setDisplayShowHomeEnabled(true);
         tmpBar.setDisplayHomeAsUpEnabled(true);
 
-        photoView = (PhotoView) findViewById(R.id.photo_view);
+        photoView = findViewById(R.id.photo_view);
 
         Intent intent = getIntent();
         String fileAbsPath = intent.getStringExtra("fileAbsPath");
