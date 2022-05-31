@@ -56,7 +56,6 @@
         android:imeOptions="actionDone"
         android:minHeight="48dp"
         android:selectAllOnFocus="true"
-        android:textColorHint="#757575"
         app:layout_constraintEnd_toStartOf="@+id/get_code"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password" />
