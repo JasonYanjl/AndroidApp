@@ -3,7 +3,9 @@ package com.example.frontend;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import butterknife.BindView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +19,7 @@ import com.google.android.material.tabs.TabLayout;
  */
 public class PostFragment extends Fragment {
 
-    TabLayout tabLayout;
 
-    TabRelationFragment childFragment;
 
     public PostFragment() {
         // Required empty public constructor
@@ -38,39 +38,7 @@ public class PostFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_relation, container, false);
-
-        tabLayout = root.findViewById(R.id.tablayout);
-
-        childFragment = TabRelationFragment.newInstance();
-        childFragment.setType(0);
-
-        getChildFragmentManager().beginTransaction().replace(R.id.linearlayoutRelation,childFragment).commit();
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                if (tab.getPosition() == 0){
-                    childFragment = TabRelationFragment.newInstance();
-                    childFragment.setType(0);
-                }
-                if (tab.getPosition() == 1){
-                    childFragment = TabRelationFragment.newInstance();
-                    childFragment.setType(1);
-                }
-                getChildFragmentManager().beginTransaction().replace(R.id.linearlayoutRelation,childFragment).commit();
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
+        View root = inflater.inflate(R.layout.fragment_post, container, false);
 
         return root;
     }

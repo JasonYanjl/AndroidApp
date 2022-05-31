@@ -2,10 +2,12 @@
     <string name="app_name">frontend</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="main_usernamehint">用户名</string>
+    <string name="main_usernamehint">账号</string>
     <string name="main_passwordhint">密码</string>
     <string name="main_loginbtn">登录</string>
-    <string name="main_registerbtn">还没有账号？去注册</string>
+    <string name="main_registerbtn">注册</string>
     <string name="post_edittab">编辑</string>
     <string name="post_drafttab">草稿</string>
+    <string name="main_logintitle">| 登录</string>
+    <string name="main_aboutstring">\@移动应用小组</string>
 </resources>

@@ -20,7 +20,7 @@
         android:layout_marginEnd="24dp"
 
         android:autofillHints=""
-        android:hint="用户名"
+        android:hint="@string/main_usernamehint"
         android:inputType="text"
         android:minHeight="48dp"
         android:selectAllOnFocus="true"
@@ -35,7 +35,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
-        android:hint="密码"
+        android:hint="@string/main_passwordhint"
         android:imeOptions="actionDone"
         android:inputType="textPassword"
         android:minHeight="48dp"
@@ -96,34 +96,28 @@
 
     <Button
         android:id="@+id/register"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="301dp"
+        android:layout_height="46dp"
         android:layout_gravity="start"
-        android:layout_marginStart="48dp"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="48dp"
         android:layout_marginBottom="64dp"
-        android:text="注册"
+        android:text="@string/main_registerbtn"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/code"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintVertical_bias="0.087" />
 
     <Button
         android:id="@+id/login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="48dp"
-        android:layout_marginBottom="64dp"
+        android:layout_marginEnd="148dp"
 
-        android:text="已有账号? 去登录"
+        android:layout_marginBottom="196dp"
+        android:text="@string/main_loginbtn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/register"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintTop_toBottomOf="@+id/register" />
 </androidx.constraintlayout.widget.ConstraintLayout>
