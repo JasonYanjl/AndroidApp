@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,22 +9,32 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:scaleX="0.92">
 
-        <TextView
-            android:id="@+id/textPostTitle"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/post_tab"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:text="标题"
-            android:textSize="24sp" />
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/textPostContent"
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/post_tab_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="编辑" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/post_tab_draft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="草稿" />
+
+        </com.google.android.material.tabs.TabLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/post_viewpager"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:ems="10"
-            android:gravity="start|top"
-            android:hint="内容"
-            android:inputType="textMultiLine" />
+            android:layout_height="match_parent" />
+
     </LinearLayout>
 </FrameLayout>
