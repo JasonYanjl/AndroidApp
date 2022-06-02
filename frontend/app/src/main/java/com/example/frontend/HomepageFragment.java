@@ -125,6 +125,7 @@ public class HomepageFragment extends Fragment {
         searchText.setOnClickListener(view -> {
             Log.i("click", "search click");
             Intent intent = new Intent(getActivity(), SearchActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });
 

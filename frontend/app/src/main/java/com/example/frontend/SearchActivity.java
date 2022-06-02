@@ -2,9 +2,11 @@ package com.example.frontend;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -12,6 +14,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Toast;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.example.frontend.adapter.PostAdapter;
+import com.example.frontend.adapter.PostAdapter_search;
+import com.example.frontend.info.PostInfo;
+import com.example.frontend.info.UserInfo;
+import com.example.frontend.utils.HttpRequestManager;
+
+import java.util.HashMap;
+import java.util.LinkedList;
 
 import butterknife.ButterKnife;
 
@@ -28,6 +43,52 @@ public class SearchActivity extends AppCompatActivity {
     RecyclerView recyclerViewSearchResult;
 
     String searchText = "";
+    PostAdapter_search postAdapter;
+
+    public class MyCallBack implements HttpRequestManager.ReqCallBack {
+        public int type;
+        public MyCallBack(int type){
+            this.type = type;
+        }
+        public void setType(int type){
+            this.type = type;
+        }
+        @Override
+        public void onReqSuccess(Object result) {
+            if (type == 15) {
+                JSONArray nowList = JSON.parseObject(result.toString()).getJSONArray("list");
+                LinkedList<PostInfo> postInfoLinkedList = new LinkedList<>();
+                for(int i=0;i<nowList.size();i++) {
+                    JSONObject tmpInfo = nowList.getJSONObject(i);
+                    postInfoLinkedList.addLast(new PostInfo(tmpInfo.getInteger("postid"),
+                            tmpInfo.getInteger("userid"),
+                            tmpInfo.getString("username"),
+                            tmpInfo.getInteger("avatarid"),
+                            tmpInfo.getString("avatarfilename"),
+                            tmpInfo.getString("intro"),
+                            tmpInfo.getInteger("fileid"),
+                            tmpInfo.getString("filename"),
+                            tmpInfo.getString("title"),
+                            tmpInfo.getString("text"),
+                            tmpInfo.getInteger("type"),
+                            tmpInfo.getString("time"),
+                            tmpInfo.getString("location"),
+                            tmpInfo.getInteger("subscribe"),
+                            tmpInfo.getInteger("block")));
+                }
+                setSearchContent();
+                postAdapter = new PostAdapter_search(getApplicationContext(), postInfoLinkedList);
+                recyclerViewSearchResult.setAdapter(postAdapter);
+                recyclerViewSearchResult.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+            }
+            Log.e("SearchActivity---------",result.toString());
+        }
+
+        @Override
+        public void onReqFailed(String errorMsg) {
+            Log.e("SearchActivity---------",errorMsg);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +159,35 @@ public class SearchActivity extends AppCompatActivity {
 
         buttonButton.setOnClickListener(v -> {
             searchText = editTextSearch.getText().toString();
-            setSearchContent();
+
+            HttpRequestManager http = HttpRequestManager.getInstance(getApplicationContext());
+            MyCallBack callBack = new MyCallBack(15);
+            HashMap<String, String> data = new HashMap<>();
+            data.put("userid", Integer.toString(UserInfo.getInstance().getUserid()));
+            data.put("sort", "time");
+            data.put("searchtext", searchText);
+            if (radioButtonUsername.isChecked()) {
+                data.put("searchtype", "username");
+            }
+            else if (radioButtonTitle.isChecked()) {
+                data.put("searchtype", "title");
+            }
+            else if (radioButtonText.isChecked()) {
+                data.put("searchtype", "text");
+            }
+            if (radioButtonType0.isChecked()) {
+                data.put("posttype", "0");
+            }
+            else if (radioButtonType1.isChecked()) {
+                data.put("posttype", "1");
+            }
+            else if (radioButtonType2.isChecked()) {
+                data.put("posttype", "2");
+            }
+            else if (radioButtonType3.isChecked()) {
+                data.put("posttype", "3");
+            }
+            http.requestAsyn("api/discover/search",0, data, callBack);
         });
 
         editTextSearch.setText(searchText);

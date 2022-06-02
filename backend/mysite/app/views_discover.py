@@ -443,7 +443,6 @@ def discover_search(request):
                 return HttpResponse(json.dumps({"Message": "Error Params"}),
                                     content_type="application/json",
                                     status=401)
-
         NowRes = models.Post.objects.all()
         if search_type == "title":
             for tmp_text in search_text_list:
