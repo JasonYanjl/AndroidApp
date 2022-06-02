@@ -8,6 +8,8 @@ import android.os.Bundle;
 
 import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,8 +23,11 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.example.frontend.adapter.PostAdapter;
+import com.example.frontend.adapter.PostAdapter_search;
 import com.example.frontend.entity.chat.Message;
 import com.example.frontend.entity.chat.User;
+import com.example.frontend.info.PostInfo;
 import com.example.frontend.info.UserInfo;
 import com.example.frontend.utils.FileManager;
 import com.example.frontend.utils.HttpRequestManager;
@@ -30,6 +35,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,6 +52,10 @@ public class AccountFragment extends Fragment {
     ImageView imageViewAvatar;
 
     ImageButton imageButtonSettings;
+
+    RecyclerView recyclerView;
+
+    PostAdapter postAdapter;
 
     public AccountFragment() {
         // Required empty public constructor
@@ -92,6 +102,31 @@ public class AccountFragment extends Fragment {
                         + "/" + UserInfo.getInstance().getAvatarFilename();
                 imageViewAvatar.setImageDrawable(Drawable.createFromPath(fileAbsPath));
             }
+            else if (type==16) {
+                JSONArray nowList = JSON.parseObject(result.toString()).getJSONArray("list");
+                LinkedList<PostInfo> postInfoLinkedList = new LinkedList<>();
+                for(int i=0;i<nowList.size();i++) {
+                    JSONObject tmpInfo = nowList.getJSONObject(i);
+                    postInfoLinkedList.addLast(new PostInfo(tmpInfo.getInteger("postid"),
+                            tmpInfo.getInteger("userid"),
+                            tmpInfo.getString("username"),
+                            tmpInfo.getInteger("avatarid"),
+                            tmpInfo.getString("avatarfilename"),
+                            tmpInfo.getString("intro"),
+                            tmpInfo.getInteger("fileid"),
+                            tmpInfo.getString("filename"),
+                            tmpInfo.getString("title"),
+                            tmpInfo.getString("text"),
+                            tmpInfo.getInteger("type"),
+                            tmpInfo.getString("time"),
+                            tmpInfo.getString("location"),
+                            tmpInfo.getInteger("subscribe"),
+                            tmpInfo.getInteger("block")));
+                }
+                postAdapter = new PostAdapter(context, postInfoLinkedList);
+                recyclerView.setAdapter(postAdapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            }
             Log.i("AccountFrag---",result.toString());
         }
 
@@ -128,6 +163,7 @@ public class AccountFragment extends Fragment {
         textViewIntro = (TextView) root.findViewById(R.id.textViewIntro);
         imageViewAvatar = (ImageView) root.findViewById(R.id.imageViewAvatar);
         imageButtonSettings = (ImageButton) root.findViewById(R.id.buttonSetting);
+        recyclerView = (RecyclerView) root.findViewById(R.id.recyclerViewAccount);
         context = this.getActivity();
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -176,6 +212,13 @@ public class AccountFragment extends Fragment {
         else {
             imageViewAvatar.setImageResource(R.drawable.ic_avatar);
         }
+
+        HttpRequestManager http = HttpRequestManager.getInstance(context);
+        MyCallBack callBack = new MyCallBack(16);
+        HashMap<String, String> data = new HashMap<>();
+        data.put("userid", Integer.toString(UserInfo.getInstance().getUserid()));
+        data.put("posterid", Integer.toString(UserInfo.getInstance().getUserid()));
+        http.requestAsyn("api/discover/allpost",0, data, callBack);
     }
 
 }

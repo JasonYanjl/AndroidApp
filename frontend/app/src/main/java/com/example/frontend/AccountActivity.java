@@ -2,6 +2,8 @@ package com.example.frontend;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,11 +16,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.example.frontend.adapter.PostAdapter;
+import com.example.frontend.info.PostInfo;
+import com.example.frontend.info.UserInfo;
 import com.example.frontend.utils.FileManager;
 import com.example.frontend.utils.HttpRequestManager;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import butterknife.ButterKnife;
 
@@ -31,6 +38,10 @@ public class AccountActivity extends AppCompatActivity {
 
     String username, intro, avatarFilename;
     Integer userid, avatarID;
+
+    PostAdapter postAdapter;
+
+    RecyclerView recyclerView;
 
     public class MyCallBack implements HttpRequestManager.ReqCallBack {
         public int type;
@@ -67,6 +78,31 @@ public class AccountActivity extends AppCompatActivity {
                 String fileAbsPath =  FileManager.getInstance().getUserFileAbsolutePath(context, "avatar")
                         + "/" + avatarFilename;
                 imageViewAvatar.setImageDrawable(Drawable.createFromPath(fileAbsPath));
+            }
+            else if (type==17) {
+                JSONArray nowList = JSON.parseObject(result.toString()).getJSONArray("list");
+                LinkedList<PostInfo> postInfoLinkedList = new LinkedList<>();
+                for(int i=0;i<nowList.size();i++) {
+                    JSONObject tmpInfo = nowList.getJSONObject(i);
+                    postInfoLinkedList.addLast(new PostInfo(tmpInfo.getInteger("postid"),
+                            tmpInfo.getInteger("userid"),
+                            tmpInfo.getString("username"),
+                            tmpInfo.getInteger("avatarid"),
+                            tmpInfo.getString("avatarfilename"),
+                            tmpInfo.getString("intro"),
+                            tmpInfo.getInteger("fileid"),
+                            tmpInfo.getString("filename"),
+                            tmpInfo.getString("title"),
+                            tmpInfo.getString("text"),
+                            tmpInfo.getInteger("type"),
+                            tmpInfo.getString("time"),
+                            tmpInfo.getString("location"),
+                            tmpInfo.getInteger("subscribe"),
+                            tmpInfo.getInteger("block")));
+                }
+                postAdapter = new PostAdapter(context, postInfoLinkedList);
+                recyclerView.setAdapter(postAdapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(context));
             }
             Log.i("AccountActi---",result.toString());
         }
@@ -113,6 +149,7 @@ public class AccountActivity extends AppCompatActivity {
         textViewUsername = (TextView) findViewById(R.id.textViewUsernameAccount);
         textViewIntro = (TextView) findViewById(R.id.textViewIntroAccount);
         imageViewAvatar = (ImageView) findViewById(R.id.imageViewAvatarAccount);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerViewAccountActivity);
 
         context = getApplicationContext();
 
@@ -135,6 +172,13 @@ public class AccountActivity extends AppCompatActivity {
         else {
             imageViewAvatar.setImageResource(R.drawable.ic_avatar);
         }
+
+        HttpRequestManager http = HttpRequestManager.getInstance(context);
+        MyCallBack callBack = new MyCallBack(17);
+        HashMap<String, String> data = new HashMap<>();
+        data.put("userid", Integer.toString(UserInfo.getInstance().getUserid()));
+        data.put("posterid", Integer.toString(userid));
+        http.requestAsyn("api/discover/allpost",0, data, callBack);
     }
 
     @Override

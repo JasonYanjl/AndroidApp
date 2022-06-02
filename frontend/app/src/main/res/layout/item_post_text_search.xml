@@ -48,8 +48,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginRight="5dp"
                 android:text="取消关注"
-                android:textSize="8sp"
-                app:rippleColor="#673AB7" />
+                android:textSize="8sp"/>
 
             <Button
                 android:id="@+id/buttonBlockPostSearch"
