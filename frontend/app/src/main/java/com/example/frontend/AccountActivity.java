@@ -100,7 +100,7 @@ public class AccountActivity extends AppCompatActivity {
                             tmpInfo.getInteger("subscribe"),
                             tmpInfo.getInteger("block")));
                 }
-                postAdapter = new PostAdapter(context, postInfoLinkedList);
+                postAdapter = new PostAdapter(AccountActivity.this, postInfoLinkedList);
                 recyclerView.setAdapter(postAdapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             }

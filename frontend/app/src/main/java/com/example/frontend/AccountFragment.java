@@ -1,12 +1,10 @@
 package com.example.frontend;
 
-import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
-import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,16 +22,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.frontend.adapter.PostAdapter;
-import com.example.frontend.adapter.PostAdapter_search;
-import com.example.frontend.entity.chat.Message;
-import com.example.frontend.entity.chat.User;
 import com.example.frontend.info.PostInfo;
 import com.example.frontend.info.UserInfo;
 import com.example.frontend.utils.FileManager;
 import com.example.frontend.utils.HttpRequestManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 

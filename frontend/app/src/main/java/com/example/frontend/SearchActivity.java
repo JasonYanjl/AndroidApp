@@ -6,29 +6,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.frontend.adapter.PostAdapter;
-import com.example.frontend.adapter.PostAdapter_search;
 import com.example.frontend.info.PostInfo;
 import com.example.frontend.info.UserInfo;
 import com.example.frontend.utils.HttpRequestManager;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-
-import butterknife.ButterKnife;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -43,7 +37,7 @@ public class SearchActivity extends AppCompatActivity {
     RecyclerView recyclerViewSearchResult;
 
     String searchText = "";
-    PostAdapter_search postAdapter;
+    PostAdapter postAdapter;
 
     public class MyCallBack implements HttpRequestManager.ReqCallBack {
         public int type;
@@ -77,7 +71,7 @@ public class SearchActivity extends AppCompatActivity {
                             tmpInfo.getInteger("block")));
                 }
                 setSearchContent();
-                postAdapter = new PostAdapter_search(getApplicationContext(), postInfoLinkedList);
+                postAdapter = new PostAdapter(SearchActivity.this, postInfoLinkedList);
                 recyclerViewSearchResult.setAdapter(postAdapter);
                 recyclerViewSearchResult.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
             }
