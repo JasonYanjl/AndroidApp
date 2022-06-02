@@ -444,30 +444,6 @@ def discover_search(request):
                                     content_type="application/json",
                                     status=401)
         NowRes = models.Post.objects.all()
-        if search_type == "title":
-            for tmp_text in search_text_list:
-                NowRes = NowRes.filter(post_title__contains=tmp_text)
-        elif search_type == "text":
-            for tmp_text in search_text_list:
-                NowRes = NowRes.filter(post_text__contains=tmp_text)
-        elif search_type == "username":
-            PastUser = models.User.objects.all()
-            for tmp_text in search_text_list:
-                PastUser = PastUser.filter(user_username__contains=tmp_text)
-
-            NowRes = None
-
-            for NowPostUser in PastUser:
-                if NowRes is None:
-                    NowRes = models.Post.objects.filter(post_user_id=NowPostUser.user_id)
-                else:
-                    tmpRes = models.Post.objects.filter(post_user_id=NowPostUser.user_id)
-                    NowRes = NowRes.union(tmpRes)
-
-        else:
-            return HttpResponse(json.dumps({"Message": "Error Params search type"}),
-                                content_type="application/json",
-                                status=401)
 
         if post_type is None:
             pass
@@ -480,6 +456,33 @@ def discover_search(request):
                                     status=401)
 
             NowRes = NowRes.filter(post_type=post_type)
+
+        if search_type == "title":
+            for tmp_text in search_text_list:
+                NowRes = NowRes.filter(post_title__contains=tmp_text)
+        elif search_type == "text":
+            for tmp_text in search_text_list:
+                NowRes = NowRes.filter(post_text__contains=tmp_text)
+        elif search_type == "username":
+            PastUser = models.User.objects.all()
+            for tmp_text in search_text_list:
+                PastUser = PastUser.filter(user_username__contains=tmp_text)
+
+            NowRes_new = None
+
+            for NowPostUser in PastUser:
+                if NowRes_new is None:
+                    NowRes_new = NowRes.filter(post_user_id=NowPostUser.user_id)
+                else:
+                    tmpRes = NowRes.filter(post_user_id=NowPostUser.user_id)
+                    NowRes_new = NowRes_new.union(tmpRes)
+
+            NowRes = NowRes_new
+
+        else:
+            return HttpResponse(json.dumps({"Message": "Error Params search type"}),
+                                content_type="application/json",
+                                status=401)
 
         if Sort == 'time':
             if NowRes is not None:
