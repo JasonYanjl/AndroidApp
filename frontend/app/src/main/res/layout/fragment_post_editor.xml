@@ -15,9 +15,9 @@
             android:id="@+id/textPostTitle"
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:text="标题"
-            android:textSize="24sp"
-            android:autofillHints="" />
+            android:hint="标题"
+            android:inputType="text"
+            android:textSize="24sp" />
 
         <EditText
             android:id="@+id/textPostContent"

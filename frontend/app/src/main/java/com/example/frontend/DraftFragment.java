@@ -33,12 +33,8 @@ public class DraftFragment extends Fragment {
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static DraftFragment newInstance(int columnCount) {
-        DraftFragment fragment = new DraftFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
+    public static DraftFragment newInstance() {
+        return  new DraftFragment();
     }
 
     @Override

@@ -3,10 +3,29 @@ package com.example.frontend;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
+import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.example.frontend.adapter.PostAdapter;
+import com.example.frontend.info.PostInfo;
+import com.example.frontend.info.UserInfo;
+import com.example.frontend.utils.HttpRequestManager;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,51 +33,87 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class PostFragmentEditor extends Fragment {
+    @BindView(R.id.textPostTitle)
+    protected EditText titleEdit;
+    @BindView(R.id.textPostContent)
+    protected EditText contentEdit;
+    @BindView(R.id.post_submit_btn)
+    protected Button submitBtn;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    private int postType = 0; //  0 text only, 1 with pic, 2 with audio, 3 with video
+    private File mfile;
     public PostFragmentEditor() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PostFragmentEditor.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PostFragmentEditor newInstance(String param1, String param2) {
-        PostFragmentEditor fragment = new PostFragmentEditor();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public static PostFragmentEditor newInstance() {
+        return new PostFragmentEditor();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_post_editor, container, false);
+        View root = inflater.inflate(R.layout.fragment_post, container, false);
+        ButterKnife.bind(this, root);
+        return root;
+    }
+    private class MyCallBack implements HttpRequestManager.ReqCallBack {
+        public int type;
+        public MyCallBack(int type){
+            this.type = type;
+        } // 0 for submit, 1 for upload
+        public void setType(int type){
+            this.type = type;
+        }
+        @Override
+
+        public void onReqSuccess(Object result) {
+            JSONArray nowList = JSON.parseObject(result.toString()).getJSONArray("list");
+
+            Log.i("PostActivity---------",result.toString());
+        }
+
+        @Override
+        public void onReqFailed(String errorMsg) {
+            Log.e("PostActivity---------",errorMsg);
+        }
+    }
+    public void Submit(){
+        String title = titleEdit.getText().toString();
+        String content = contentEdit.getText().toString();
+        HttpRequestManager http = HttpRequestManager.getInstance(getActivity().getApplicationContext());
+        PostFragmentEditor.MyCallBack callBack = new PostFragmentEditor.MyCallBack(0);
+        HashMap<String, String> data = new HashMap<>();
+        data.put("userid", Integer.toString(UserInfo.getInstance().getUserid()));
+        data.put("title",title);
+        data.put("text",content);
+        data.put("type",String.valueOf(postType));
+        if(postType != 0){
+
+        }
+
+    }
+
+    public int UploadFile(){
+        int fileid = -1;
+        try{
+            HttpRequestManager http = HttpRequestManager.getInstance(getActivity().getApplicationContext());
+            PostFragmentEditor.MyCallBack callBack = new PostFragmentEditor.MyCallBack(1);
+            HashMap<String, String> data = new HashMap<>();
+            data.put("userid", Integer.toString(UserInfo.getInstance().getUserid()));
+            // TODO: upload file here
+            // data.put("file",mfile);
+            data.put("type",String.valueOf(postType));
+        }catch (Exception e){
+            Log.e("PostActivity---------",e.toString());
+        }
+        return fileid;
+
     }
 }
