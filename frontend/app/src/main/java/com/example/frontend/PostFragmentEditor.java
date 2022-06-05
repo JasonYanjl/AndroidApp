@@ -61,7 +61,7 @@ public class PostFragmentEditor extends Fragment {
         ButterKnife.bind(this, root);
         return root;
     }
-    private static class MyCallBack implements HttpRequestManager.ReqCallBack {
+    private class MyCallBack implements HttpRequestManager.ReqCallBack {
         public int type;
         public MyCallBack(int type){
             this.type = type;
@@ -75,6 +75,7 @@ public class PostFragmentEditor extends Fragment {
             if(type == 0) {
                 // submit callback
                 JSONArray nowList = JSON.parseObject(result.toString()).getJSONArray("list");
+
             }
             if(type == 1){
                 // upload callback
@@ -91,6 +92,11 @@ public class PostFragmentEditor extends Fragment {
         }
     }
     public void Submit(){
+        if(postType != 0){
+            this.UploadFile();
+            return;
+        }
+
         String title = titleEdit.getText().toString();
         String content = contentEdit.getText().toString();
         HttpRequestManager http = HttpRequestManager.getInstance(requireActivity().getApplicationContext());
@@ -100,9 +106,7 @@ public class PostFragmentEditor extends Fragment {
         data.put("title",title);
         data.put("text",content);
         data.put("type",String.valueOf(postType));
-        if(postType != 0){
-            this.UploadFile();
-        }
+
 
     }
 

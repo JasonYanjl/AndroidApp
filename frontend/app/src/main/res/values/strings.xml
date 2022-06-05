@@ -10,4 +10,6 @@
     <string name="post_drafttab">草稿</string>
     <string name="main_logintitle">| 登录</string>
     <string name="main_aboutstring">\@移动应用小组</string>
+    <string name="editor_title">标题</string>
+    <string name="editor_content">内容</string>
 </resources>
