@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,14 +17,13 @@ import android.widget.EditText;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.example.frontend.adapter.PostAdapter;
-import com.example.frontend.info.PostInfo;
+import com.example.frontend.entity.chat.User;
 import com.example.frontend.info.UserInfo;
 import com.example.frontend.utils.HttpRequestManager;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.LinkedList;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,7 +61,7 @@ public class PostFragmentEditor extends Fragment {
         ButterKnife.bind(this, root);
         return root;
     }
-    private class MyCallBack implements HttpRequestManager.ReqCallBack {
+    private static class MyCallBack implements HttpRequestManager.ReqCallBack {
         public int type;
         public MyCallBack(int type){
             this.type = type;
@@ -74,8 +72,16 @@ public class PostFragmentEditor extends Fragment {
         @Override
 
         public void onReqSuccess(Object result) {
-            JSONArray nowList = JSON.parseObject(result.toString()).getJSONArray("list");
-
+            if(type == 0) {
+                // submit callback
+                JSONArray nowList = JSON.parseObject(result.toString()).getJSONArray("list");
+            }
+            if(type == 1){
+                // upload callback
+                JSONObject res = JSON.parseObject(result.toString());
+                int fileid = res.getInteger("fileid");
+                // submit post here
+            }
             Log.i("PostActivity---------",result.toString());
         }
 
@@ -87,33 +93,31 @@ public class PostFragmentEditor extends Fragment {
     public void Submit(){
         String title = titleEdit.getText().toString();
         String content = contentEdit.getText().toString();
-        HttpRequestManager http = HttpRequestManager.getInstance(getActivity().getApplicationContext());
-        PostFragmentEditor.MyCallBack callBack = new PostFragmentEditor.MyCallBack(0);
+        HttpRequestManager http = HttpRequestManager.getInstance(requireActivity().getApplicationContext());
+        PostFragmentEditor.MyCallBack callBack = new MyCallBack(0);
         HashMap<String, String> data = new HashMap<>();
         data.put("userid", Integer.toString(UserInfo.getInstance().getUserid()));
         data.put("title",title);
         data.put("text",content);
         data.put("type",String.valueOf(postType));
         if(postType != 0){
-
+            this.UploadFile();
         }
 
     }
 
-    public int UploadFile(){
+    public void UploadFile(){
         int fileid = -1;
         try{
-            HttpRequestManager http = HttpRequestManager.getInstance(getActivity().getApplicationContext());
-            PostFragmentEditor.MyCallBack callBack = new PostFragmentEditor.MyCallBack(1);
-            HashMap<String, String> data = new HashMap<>();
-            data.put("userid", Integer.toString(UserInfo.getInstance().getUserid()));
-            // TODO: upload file here
-            // data.put("file",mfile);
-            data.put("type",String.valueOf(postType));
+            HttpRequestManager http = HttpRequestManager.getInstance(requireActivity().getApplicationContext());
+            PostFragmentEditor.MyCallBack callBack = new MyCallBack(1);
+            HashMap<String, Object> fileData = new HashMap<>();
+            fileData.put("file", mfile);
+            fileData.put("userid", UserInfo.getInstance().getUserid());
+            fileData.put("type",String.valueOf(postType));
+            http.upLoadFile("api/file/upload",fileData,callBack);
         }catch (Exception e){
             Log.e("PostActivity---------",e.toString());
         }
-        return fileid;
-
     }
 }
