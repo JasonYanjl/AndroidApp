@@ -31,17 +31,18 @@
             android:inputType="textMultiLine"
             android:autofillHints="" />
 
+        <TextView
+            android:id="@+id/textPosition"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleX="0.99"
+            android:text="添加位置..."
+            android:textColor="#03A9F4" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="25dp"
             android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/post_position_btn"
-                android:layout_width="15dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/ic_baseline_location_on_24" />
 
             <ImageButton
                 android:id="@+id/post_addtion_btn"
