@@ -29,6 +29,7 @@ import com.example.frontend.entity.chat.Message;
 import com.example.frontend.info.UserInfo;
 import com.example.frontend.utils.HttpRequestManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -155,6 +156,7 @@ public class FrontpageActivity extends AppCompatActivity {
 
         getSupportFragmentManager().beginTransaction().replace(R.id.linearlayout,homepageFragment).commit();
 
+        navigationMenu.setLabelVisibilityMode(NavigationBarView.LABEL_VISIBILITY_LABELED);
         navigationMenu.setOnNavigationItemSelectedListener(item -> {
             homepageFragment = HomepageFragment.newInstance();
             relationFragment = RelationFragment.newInstance();
