@@ -41,15 +41,15 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="25dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <ImageButton
+            <Button
                 android:id="@+id/post_addtion_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/ic_add_attachment" />
+                android:text="添加附件" />
 
         </LinearLayout>
 
@@ -93,6 +93,20 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="丢弃" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/recordBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="按住说话，松开停止" />
         </LinearLayout>
 
     </LinearLayout>
