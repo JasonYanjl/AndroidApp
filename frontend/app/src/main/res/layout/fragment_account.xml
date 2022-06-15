@@ -81,7 +81,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewAccount"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:scaleX="0.95" />
 
     </LinearLayout>
 

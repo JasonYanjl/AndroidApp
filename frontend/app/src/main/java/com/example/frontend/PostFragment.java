@@ -51,6 +51,11 @@ public class PostFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
+    public void editDraft(String s){
+        mtabLayout.getTabAt(0).select();
+        getChildFragmentManager().beginTransaction().replace(R.id.postLinearLayout,PostFragmentEditor.newInstance(s)).commit();
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.sql.Ref;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -75,12 +76,15 @@ public class PostFragmentEditor extends Fragment {
     protected Button recordBtn;
     @BindView(R.id.post_savedraft_btn)
     protected Button saveDraft;
+    @BindView(R.id.post_discard_btn)
+    protected Button discardButton;
 
     private FileOutputStream outputStream;
     private FileInputStream inputStream;
     private Recorder recorder;
     private int postType = 0; //  0 text only, 1 with pic, 2 with audio, 3 with video
     private int mFileid = -1;
+    private String mlocation = "清华大学";
     final static String DRAFT_TITLE = "DRAFT_TITLE_POST_EDITOR";
     final static String DRAFT_CONTENT = "DRAFT_CONTENT_POST_EDITOR";
     final static String DRAFT_FILEID = "DRAFT_FILEID_POST_EDITOR";
@@ -153,18 +157,22 @@ public class PostFragmentEditor extends Fragment {
         // Inflate the layout for this fragment
         Log.i("********************","ONCREATE");
         Bundle bundle = getArguments();
-        if(bundle!=null)
+        if(bundle!=null) {
             draftName = bundle.getString("DRAFT");
-
+            Log.e("****DRAFT NAME IS ****",draftName);
+        }
+        else
+            Log.e("****DRAFT NAME IS ****","empty");
         View root = inflater.inflate(R.layout.fragment_post_editor, container, false);
         ButterKnife.bind(this, root);
         try {
             String filepath;
-            if(draftName == null)
-            filepath = FileManager.getInstance()
-                    .getUserFileAbsolutePath(requireContext(), "Draftcache");
-            else filepath = FileManager.getInstance()
-                        .getUserFileAbsolutePath(requireContext(), "Draft/"+draftName);
+            if(draftName == null) {
+                filepath = FileManager.getInstance()
+                        .getUserFileAbsolutePath(requireContext(), "Draftcache");
+            }
+            else {filepath = FileManager.getInstance()
+                        .getUserFileAbsolutePath(requireContext(), "Draft/"+draftName);}
 
             inputStream = new FileInputStream(new File(filepath));
             Reader reader = new InputStreamReader(inputStream);
@@ -202,6 +210,7 @@ public class PostFragmentEditor extends Fragment {
         textPosition.setOnClickListener(view -> AddPosition());
         uploadBtn.setOnClickListener(view -> ChooseFileType());
         saveDraft.setOnClickListener(view -> SaveAsDraft());
+        discardButton.setOnClickListener(view -> DiscardAllChanges());
         titleEdit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -296,7 +305,12 @@ public class PostFragmentEditor extends Fragment {
             if(type == 0) {
                 // submit callback
                 JSONArray nowList = JSON.parseObject(result.toString()).getJSONArray("list");
-
+                if(draftName != null) {
+                    String filepath;
+                    filepath = FileManager.getInstance()
+                            .getUserFileAbsolutePath(requireContext(), "Draft/" + draftName);
+                    FileManager.getInstance().deleteFile(filepath);
+                }
             }
             if(type == 1){
                 // upload callback
@@ -333,13 +347,14 @@ public class PostFragmentEditor extends Fragment {
         data.put("text",content);
         data.put("type",String.valueOf(postType));
         data.put("fileid",String.valueOf(mFileid));
-        data.put("location","");
+        data.put("location",mlocation);
         Log.i("DATA IS",data.toString());
         http.requestAsyn("api/discover/post",HttpRequestManager.TYPE_POST_JSON,data,callBack);
 
     }
     public void ChooseFileType(){
         recordBtn.setVisibility(View.INVISIBLE);
+        GetPermission();
         PopupMenu popup = new PopupMenu(getContext(), uploadBtn);
         popup.setOnMenuItemClickListener(item->{
             Intent intent;
@@ -440,9 +455,8 @@ public class PostFragmentEditor extends Fragment {
     public void AddPosition(){
 
         // TODO: use getlocation api instead
-        String mlocation = textPosition.getText().toString();
+        mlocation = textPosition.getText().toString() == "添加位置..."?"清华大学":textPosition.getText().toString();
 
-        // Parse the location and create the intent.
         Uri addressUri = Uri.parse("geo:0,0?q=" + mlocation);
         Intent intent = new Intent(Intent.ACTION_VIEW, addressUri);
 
@@ -519,6 +533,10 @@ public class PostFragmentEditor extends Fragment {
     }
     private void SaveAsDraft(){
         try {
+            if(!FileManager.getInstance().isFileExist(FileManager.getInstance()
+                    .getUserFileAbsolutePath(requireContext(), "Draft/")))
+                FileManager.getInstance().createDirection(FileManager.getInstance()
+                        .getUserFileAbsolutePath(requireContext(), "Draft/"));
             Date now = Calendar.getInstance().getTime();
             String filepath ;
             if(draftName != null)
@@ -546,6 +564,20 @@ public class PostFragmentEditor extends Fragment {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+    void DiscardAllChanges(){
+        titleEdit.setText("");
+        contentEdit.setText("");
+        postType = 0;
+        mFileid = -1;
+        ClearFileInfo();
+        Refresh();
+        if(draftName != null) {
+            String filepath;
+            filepath = FileManager.getInstance()
+                    .getUserFileAbsolutePath(requireContext(), "Draft/" + draftName);
+            FileManager.getInstance().deleteFile(filepath);
         }
     }
 }
