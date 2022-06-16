@@ -465,8 +465,15 @@ public class PostFragmentEditor extends Fragment {
                         // TODO： fix according to https://developer.android.com/training/data-storage/shared/media?hl=zh-cn
                         Log.i("click", "Select Video");
                         checkPermission(3);
-                        intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-                        startActivityForResult(intent,0x000102);
+//                        intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+//                        startActivityForResult(intent,0x000102);
+
+                        intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                        //设置视频录制的最长时间
+                        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 100);
+                        //设置视频录制的画质
+                        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+                        startActivityForResult(intent, 0x000104);
                         break;
                     default:
             }
@@ -595,7 +602,18 @@ public class PostFragmentEditor extends Fragment {
             }
         }
     }
+    private String getImagePath(Uri uri, String selection) {
+        String path = null;
+        Cursor cursor = getActivity().getContentResolver().query(uri, null, selection, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            }
 
+            cursor.close();
+        }
+        return path;
+    }
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.i("onActivityResult", Integer.toString(requestCode));
@@ -716,6 +734,47 @@ public class PostFragmentEditor extends Fragment {
                 }catch (FileNotFoundException e){
                     e.printStackTrace();
                 }
+            }
+        }
+        else if (requestCode == 0x000104) {
+            try {
+                if (resultCode == Activity.RESULT_OK) {
+                    Uri uri = data.getData();
+                    Log.i("Author",uri.getAuthority());
+                    String imagePath = "";
+                    if (DocumentsContract.isDocumentUri(getActivity(), uri)) {
+                        String docId = DocumentsContract.getDocumentId(uri);
+                        if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
+                            //Log.d(TAG, uri.toString());
+                            String id = docId.split(":")[1];
+                            String selection = MediaStore.Images.Media._ID + "=" + id;
+                            imagePath = getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection);
+                        } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
+                            //Log.d(TAG, uri.toString());
+                            Uri contentUri = ContentUris.withAppendedId(
+                                    Uri.parse("content://downloads/public_downloads"),
+                                    Long.valueOf(docId));
+                            imagePath = getImagePath(contentUri, null);
+                        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+                            //如果是file类型的Uri，直接获取图片路径即可
+                            imagePath = uri.getPath();
+                        }
+                    } else if ("content".equalsIgnoreCase(uri.getScheme())) {
+                        //Log.d(TAG, "content: " + uri.toString());
+                        imagePath = getImagePath(uri, null);
+                    }
+
+                    File nowAvatar = new File(imagePath);
+                    HttpRequestManager http = HttpRequestManager.getInstance(requireContext());
+                    MyCallBack callback = new MyCallBack(1);
+                    HashMap<String, Object> photoData = new HashMap<>();
+                    photoData.put("file", nowAvatar);
+                    photoData.put("userid", UserInfo.getInstance().getUserid());
+                    photoData.put("type", Integer.toString(3));
+                    http.upLoadFile("api/file/upload", photoData, callback);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
