@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
@@ -48,6 +50,7 @@ import java.sql.Ref;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -87,6 +90,8 @@ public class PostFragmentEditor extends Fragment {
     private FileInputStream inputStream;
     private Recorder recorder;
     private LocationManager locationManager;
+    private LocationListener locationListener;
+    String provider;
     private int postType = 0; //  0 text only, 1 with pic, 2 with audio, 3 with video
     private int mFileid = -1;
     private String mlocation = "";
@@ -164,8 +169,39 @@ public class PostFragmentEditor extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        context = this.getActivity();
+        context =   getActivity();
         GetPermission();
+        //
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);// 高精度
+        criteria.setAltitudeRequired(false);// 不要求海拔
+        criteria.setBearingRequired(false);// 不要求方位
+        criteria.setCostAllowed(true);// 允许有花费
+        criteria.setPowerRequirement(Criteria.POWER_LOW);// 低功耗
+        provider = locationManager.getBestProvider(criteria, true);
+        locationListener = new LocationListener() {
+            public void onStatusChanged(String provider, int status,
+                                        Bundle extras) {
+                // TODO Auto-generated method stub
+            }
+            public void onProviderEnabled(String provider) {
+                // TODO Auto-generated method stub
+            }
+            public void onProviderDisabled(String provider) {
+                // TODO Auto-generated method stub
+            }
+            public void onLocationChanged(Location location) {
+                Double lat = location.getLatitude();
+                Double lon = location.getLongitude();
+                Log.e("android_lat", String.valueOf(lat));
+                Log.e("android_lon", String.valueOf(lon));
+            }
+        };
+        // 监听位置变化，2秒一次，距离10米以上
+        locationManager.requestLocationUpdates(provider, 500, 10,
+                locationListener);
+
         // Inflate the layout for this fragment
         Log.i("********************","ONCREATE");
         Bundle bundle = getArguments();
@@ -484,16 +520,35 @@ public class PostFragmentEditor extends Fragment {
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
         }
-        Location location = locationManager
-                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        if (location != null) {
-            Log.i("经度:", Double.toString(location.getLongitude()));
-            Log.i("纬度:", Double.toString(location.getLatitude()));
-            String str = location.getLatitude() +","+ location.getLongitude();
-            mlocation = str;
-            Refresh();
-        } else {
-            Log.e("error", "空指针");
+        List<String> providers = locationManager.getProviders(true);
+        for (String provider : providers) {
+            locationManager.requestLocationUpdates(provider, 1000, 0,
+                    new LocationListener() {
+
+                        public void onLocationChanged(Location location) {
+                        }
+
+                        public void onProviderDisabled(String provider) {
+                        }
+
+                        public void onProviderEnabled(String provider) {
+                        }
+
+                        public void onStatusChanged(String provider, int status,
+                                                    Bundle extras) {
+                        }
+                    });
+
+            Location location = locationManager.getLastKnownLocation(provider);
+            if (location != null) {
+                Log.i("经度:", Double.toString(location.getLongitude()));
+                Log.i("纬度:", Double.toString(location.getLatitude()));
+                String str = location.getLatitude() + "," + location.getLongitude();
+                mlocation = str;
+                Refresh();
+            } else {
+                Log.e("error", "空指针");
+            }
         }
     }
 
