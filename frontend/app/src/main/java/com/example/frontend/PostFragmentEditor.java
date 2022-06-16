@@ -460,6 +460,9 @@ public class PostFragmentEditor extends Fragment {
         if (!mlocation.equals("")) {
             textPosition.setText("经纬度："+ mlocation);
         }
+        else {
+            textPosition.setText("添加位置");
+        }
         if(titleStr!=null)
             titleEdit.setText(titleStr);
         if(contentStr!=null)
@@ -642,6 +645,7 @@ public class PostFragmentEditor extends Fragment {
         contentEdit.setText("");
         postType = 0;
         mFileid = -1;
+        mlocation = "";
         ClearFileInfo();
         Refresh();
         if(draftName != null) {
