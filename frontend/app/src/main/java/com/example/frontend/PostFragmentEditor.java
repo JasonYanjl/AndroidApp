@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -26,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +44,7 @@ import com.example.frontend.utils.HttpRequestManager;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -51,11 +55,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -94,6 +100,7 @@ public class PostFragmentEditor extends Fragment {
     String provider;
     private int postType = 0; //  0 text only, 1 with pic, 2 with audio, 3 with video
     private int mFileid = -1;
+    Uri imageUri;
     private String mlocation = "";
     final static String DRAFT_TITLE = "DRAFT_TITLE_POST_EDITOR";
     final static String DRAFT_CONTENT = "DRAFT_CONTENT_POST_EDITOR";
@@ -103,6 +110,7 @@ public class PostFragmentEditor extends Fragment {
     private String contentStr = null;
     private String titleStr = null;
     private String draftName = null;
+    String path=null;
     public PostFragmentEditor() {
         // Required empty public constructor
     }
@@ -409,8 +417,44 @@ public class PostFragmentEditor extends Fragment {
                     case R.id.uploadImage:
                         this.postType = 1;
                         checkPermission(1);
-                        intent= new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        startActivityForResult(intent,0x000101);
+//                        intent= new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                        startActivityForResult(intent,0x000101);
+                        File output = new File(context.getExternalCacheDir(), "output.jpg");
+
+                        Objects.requireNonNull(output.getParentFile()).mkdirs();
+                        try {
+                            if (output.exists()){
+                                output.delete();
+                            }
+                            output.createNewFile();
+                        }catch (IOException e){
+                            e.printStackTrace();
+                        }
+                        if(Build.VERSION.SDK_INT>=24)
+                            //判断安卓的版本是否高于7.0，高于则调用高于的方法，低于则调用低于的方法
+                            //把文件转换成Uri对象
+                    /*
+                    因为android7.0以后直接使用本地真实路径是不安全的，会抛出异常。
+                    FileProvider是一种特殊的内容提供器，可以对数据进行保护
+                     */
+                        {
+                            imageUri= FileProvider.getUriForFile(getActivity(),
+                                    "com.buildmaterialapplication.fileprovider",output);
+                            //对应Mainfest中的provider
+//            imageUri=Uri.fromFile(outputImage);
+                            path=imageUri.getPath();
+                            Log.e(">7:",path);
+                        }
+                        else {
+                            imageUri= Uri.fromFile(output);
+                            path=imageUri.getPath();
+
+                            Log.e("<7:",imageUri.getPath());
+
+                        }
+                        intent=new Intent("android.media.action.IMAGE_CAPTURE");
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri);
+                        startActivityForResult(intent,0x000103);
                         break;
                     case R.id.uploadAudio:
                         this.postType = 2;
@@ -637,6 +681,41 @@ public class PostFragmentEditor extends Fragment {
                 photoData.put("userid", UserInfo.getInstance().getUserid());
                 photoData.put("type", Integer.toString(3));
                 http.upLoadFile("api/file/upload", photoData, callback);
+            }
+        }
+        else if (requestCode == 0x000103) {
+            if (resultCode==Activity.RESULT_OK){
+                // 使用try让程序运行在内报错
+                try {
+                    //将图片保存
+                    Bitmap bitmap= BitmapFactory.decodeStream(context.getContentResolver().openInputStream(imageUri));
+
+                    String TargetPath = FileManager.getInstance()
+                            .getUserFileAbsolutePath(requireContext(), "image.jpg");
+                    File saveFile = new File(TargetPath);
+                    try {
+                        FileOutputStream saveImgOut = new FileOutputStream(saveFile);
+                        // compress - 压缩的意思
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, saveImgOut);
+                        //存储完成后需要清除相关的进程
+                        saveImgOut.flush();
+                        saveImgOut.close();
+                        Log.d("Save Bitmap", "The picture is save to your phone!");
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+
+                    File nowAvatar = new File(TargetPath);
+                    HttpRequestManager http = HttpRequestManager.getInstance(requireContext());
+                    MyCallBack callback = new MyCallBack(1);
+                    HashMap<String, Object> photoData = new HashMap<>();
+                    photoData.put("file", nowAvatar);
+                    photoData.put("userid", UserInfo.getInstance().getUserid());
+                    photoData.put("type", Integer.toString(1));
+                    http.upLoadFile("api/file/upload", photoData, callback);
+                }catch (FileNotFoundException e){
+                    e.printStackTrace();
+                }
             }
         }
     }
