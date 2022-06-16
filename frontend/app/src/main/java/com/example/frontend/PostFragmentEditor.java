@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -54,6 +56,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.Call;
 
 
 /**
@@ -79,16 +82,19 @@ public class PostFragmentEditor extends Fragment {
     @BindView(R.id.post_discard_btn)
     protected Button discardButton;
 
+    Context context;
     private FileOutputStream outputStream;
     private FileInputStream inputStream;
     private Recorder recorder;
+    private LocationManager locationManager;
     private int postType = 0; //  0 text only, 1 with pic, 2 with audio, 3 with video
     private int mFileid = -1;
-    private String mlocation = "清华大学";
+    private String mlocation = "";
     final static String DRAFT_TITLE = "DRAFT_TITLE_POST_EDITOR";
     final static String DRAFT_CONTENT = "DRAFT_CONTENT_POST_EDITOR";
     final static String DRAFT_FILEID = "DRAFT_FILEID_POST_EDITOR";
     final static String DRAFT_POSTTYPE = "DRAFT_POSTTYPE_POST_EDITOR";
+    final static String DRAFT_LOCATION = "DRAFT_LOCATION";
     private String contentStr = null;
     private String titleStr = null;
     private String draftName = null;
@@ -117,6 +123,7 @@ public class PostFragmentEditor extends Fragment {
             contentStr = savedInstanceState.getString(DRAFT_CONTENT);
             mFileid = savedInstanceState.getInt(DRAFT_FILEID);
             postType = savedInstanceState.getInt(DRAFT_POSTTYPE);
+            mlocation = savedInstanceState.getString(DRAFT_LOCATION);
         }
     }
 
@@ -134,6 +141,7 @@ public class PostFragmentEditor extends Fragment {
             newdata.put(DRAFT_CONTENT,contentStr);
             newdata.put(DRAFT_FILEID,mFileid);
             newdata.put(DRAFT_POSTTYPE,postType);
+            newdata.put(DRAFT_LOCATION, mlocation);
             Log.i("*****WRITE*****",newdata.toString());
             Log.i("*****WRITE*****PATH=",filepath);
             outputStream.write(newdata.toString().getBytes(StandardCharsets.UTF_8));
@@ -154,6 +162,8 @@ public class PostFragmentEditor extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        context = this.getActivity();
+        GetPermission();
         // Inflate the layout for this fragment
         Log.i("********************","ONCREATE");
         Bundle bundle = getArguments();
@@ -191,6 +201,7 @@ public class PostFragmentEditor extends Fragment {
                 contentStr = newdata.getString(DRAFT_CONTENT);
                 mFileid = newdata.getInteger(DRAFT_FILEID);
                 postType = newdata.getInteger(DRAFT_POSTTYPE);
+                mlocation = newdata.getString(DRAFT_LOCATION);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -446,6 +457,9 @@ public class PostFragmentEditor extends Fragment {
             uploadBtn.setOnClickListener(view -> ClearFileInfo());
             uploadBtn.setText("删除附件"+ mFileid);
         }
+        if (!mlocation.equals("")) {
+            textPosition.setText("经纬度："+ mlocation);
+        }
         if(titleStr!=null)
             titleEdit.setText(titleStr);
         if(contentStr!=null)
@@ -455,13 +469,29 @@ public class PostFragmentEditor extends Fragment {
     public void AddPosition(){
 
         // TODO: use getlocation api instead
-        mlocation = textPosition.getText().toString() == "添加位置..."?"清华大学":textPosition.getText().toString();
+        GetPermission();
 
-        Uri addressUri = Uri.parse("geo:0,0?q=" + mlocation);
-        Intent intent = new Intent(Intent.ACTION_VIEW, addressUri);
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-        // Start the activity.
-        startActivity(intent);
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            ActivityCompat.requestPermissions(this.getActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
+        }
+        Location location = locationManager
+                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        if (location != null) {
+            Log.i("经度:", Double.toString(location.getLongitude()));
+            Log.i("纬度:", Double.toString(location.getLatitude()));
+            String str = location.getLatitude() +","+ location.getLongitude();
+            mlocation = str;
+            Refresh();
+        } else {
+            Log.e("error", "空指针");
+        }
     }
 
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -553,6 +583,7 @@ public class PostFragmentEditor extends Fragment {
             newdata.put(DRAFT_CONTENT,contentStr);
             newdata.put(DRAFT_FILEID,mFileid);
             newdata.put(DRAFT_POSTTYPE,postType);
+            newdata.put(DRAFT_LOCATION, mlocation);
             outputStream.write(newdata.toString().getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             e.printStackTrace();
