@@ -66,7 +66,7 @@ public class DraftFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolderA holder, int position) {
-            holder.mTextView.setText(mList.get(position));
+            holder.mTextView.setText(mList.get(position)+"的草稿");
         }
 
         @Override
@@ -131,7 +131,9 @@ public class DraftFragment extends Fragment {
 
         String filepath = FileManager.getInstance()
                 .getUserFileAbsolutePath(requireContext(), "Draft/");
-        drafts = getAllFiles(filepath);
+        drafts.add("自动保存");
+        for(String title : getAllFiles(filepath))
+            drafts.add(title);
     }
 
     public static List<String> getAllFiles(String dirPath) {
