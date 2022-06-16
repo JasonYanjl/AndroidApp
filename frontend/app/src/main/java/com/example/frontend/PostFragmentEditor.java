@@ -372,6 +372,9 @@ public class PostFragmentEditor extends Fragment {
                         Toast.LENGTH_SHORT).show();
                 titleEdit.setText("");
                 contentEdit.setText("");
+                postType = 0;
+                mFileid = -1;
+                mlocation = "";
                 Refresh();
 
             }
