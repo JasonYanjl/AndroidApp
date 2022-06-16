@@ -107,6 +107,8 @@ public class PostFragmentEditor extends Fragment {
         return new PostFragmentEditor();
     }
     static PostFragmentEditor newInstance(String s){
+        if(s == "自动保存")
+            return new PostFragmentEditor();
         PostFragmentEditor myFragment = new PostFragmentEditor();
         Bundle bundle = new Bundle();
         bundle.putString("DRAFT",s);
@@ -219,7 +221,6 @@ public class PostFragmentEditor extends Fragment {
 
         Refresh();
         textPosition.setOnClickListener(view -> AddPosition());
-        uploadBtn.setOnClickListener(view -> ChooseFileType());
         saveDraft.setOnClickListener(view -> SaveAsDraft());
         discardButton.setOnClickListener(view -> DiscardAllChanges());
         titleEdit.addTextChangedListener(new TextWatcher() {
@@ -340,7 +341,6 @@ public class PostFragmentEditor extends Fragment {
         }
     }
     public void Submit(){
-
         String title = titleEdit.getText().toString();
         String content = contentEdit.getText().toString();
         if(title.length() == 0 || content.length() == 0)
@@ -497,61 +497,101 @@ public class PostFragmentEditor extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.i("onActivityResult", Integer.toString(requestCode));
-        if(requestCode == 0x000101 || requestCode == 0x000102){
+        if(requestCode == 0x000101){
             if (resultCode == Activity.RESULT_OK) {
                 //判断手机系统版本号
-                if (Build.VERSION.SDK_INT >= 19) {
-                    //4.4及以上系统使用这个方法处理图片
-                    //TODO: send http requests
-                    String imagePath = "";
-                    Uri uri = data.getData();
-                    Log.i("Author",uri.getAuthority());
-                    if (DocumentsContract.isDocumentUri(requireContext(), uri)) {
-                        String docId = DocumentsContract.getDocumentId(uri);
-                        if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
-                            Log.i("type","com.android.providers.media.documents");
-                            String id = docId.split(":")[1];
-                            String selection = MediaStore.Images.Media._ID + "=" + id;
-                            imagePath = getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection);
-                        }
-                        else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
-                            Log.i("type","com.android.providers.downloads.documents");
-                            Uri contentUri = ContentUris.withAppendedId(
-                                    Uri.parse("content://downloads/public_downloads"),
-                                    Long.valueOf(docId));
-                            imagePath = getImagePath(contentUri, null);
-                        }
-                        else if ("file".equalsIgnoreCase(uri.getScheme())) {
-                            Log.i("type","file");
-                            imagePath = uri.getPath();
-                        }
+                //4.4及以上系统使用这个方法处理图片
+                //TODO: send http requests
+                String imagePath = "";
+                Uri uri = data.getData();
+                Log.i("Author",uri.getAuthority());
+                if (DocumentsContract.isDocumentUri(requireContext(), uri)) {
+                    String docId = DocumentsContract.getDocumentId(uri);
+                    if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
+                        Log.i("type","com.android.providers.media.documents");
+                        String id = docId.split(":")[1];
+                        String selection = MediaStore.Images.Media._ID + "=" + id;
+                        imagePath = getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection,false);
                     }
-                    else if ("content".equalsIgnoreCase(uri.getScheme())) {
-                        Log.i("type","content");
-                        imagePath = getImagePath(uri, null);
+                    else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
+                        Log.i("type","com.android.providers.downloads.documents");
+                        Uri contentUri = ContentUris.withAppendedId(
+                                Uri.parse("content://downloads/public_downloads"),
+                                Long.valueOf(docId));
+                        imagePath = getImagePath(contentUri, null,false);
                     }
-                    File nowAvatar = new File(imagePath);
-                    HttpRequestManager http = HttpRequestManager.getInstance(requireContext());
-                    MyCallBack callback = new MyCallBack(1);
-                    HashMap<String, Object> photoData = new HashMap<>();
-                    photoData.put("file", nowAvatar);
-                    photoData.put("userid", UserInfo.getInstance().getUserid());
-                    if(requestCode == 0x000102) photoData.put("type", Integer.toString(3));
-                    if(requestCode == 0x000101) photoData.put("type", Integer.toString(1));
-                    http.upLoadFile("api/file/upload", photoData, callback);
+                    else if ("file".equalsIgnoreCase(uri.getScheme())) {
+                        Log.i("type","file");
+                        imagePath = uri.getPath();
+                    }
                 }
+                else if ("content".equalsIgnoreCase(uri.getScheme())) {
+                    Log.i("type","content");
+                    imagePath = getImagePath(uri, null,false);
+                }
+                File nowAvatar = new File(imagePath);
+                HttpRequestManager http = HttpRequestManager.getInstance(requireContext());
+                MyCallBack callback = new MyCallBack(1);
+                HashMap<String, Object> photoData = new HashMap<>();
+                photoData.put("file", nowAvatar);
+                photoData.put("userid", UserInfo.getInstance().getUserid());
+                photoData.put("type", Integer.toString(1));
+                http.upLoadFile("api/file/upload", photoData, callback);
             }
         }
-        else {
-
+        else if(requestCode == 0x000102) {
+            if (resultCode == Activity.RESULT_OK) {
+                //判断手机系统版本号
+                //4.4及以上系统使用这个方法处理图片
+                //TODO: send http requests
+                String imagePath = "";
+                Uri uri = data.getData();
+                Log.i("Author",uri.getAuthority());
+                if (DocumentsContract.isDocumentUri(requireContext(), uri)) {
+                    String docId = DocumentsContract.getDocumentId(uri);
+                    if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
+                        Log.i("type","com.android.providers.media.documents");
+                        String id = docId.split(":")[1];
+                        String selection = MediaStore.Video.Media._ID + "=" + id;
+                        imagePath = getImagePath(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, selection,true);
+                    }
+                    else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
+                        Log.i("type","com.android.providers.downloads.documents");
+                        Uri contentUri = ContentUris.withAppendedId(
+                                Uri.parse("content://downloads/public_downloads"),
+                                Long.valueOf(docId));
+                        imagePath = getImagePath(contentUri, null,true);
+                    }
+                    else if ("file".equalsIgnoreCase(uri.getScheme())) {
+                        Log.i("type","file");
+                        imagePath = uri.getPath();
+                    }
+                }
+                else if ("content".equalsIgnoreCase(uri.getScheme())) {
+                    Log.i("type","content");
+                    imagePath = getImagePath(uri, null,true);
+                }
+                File nowAvatar = new File(imagePath);
+                HttpRequestManager http = HttpRequestManager.getInstance(requireContext());
+                MyCallBack callback = new MyCallBack(1);
+                HashMap<String, Object> photoData = new HashMap<>();
+                photoData.put("file", nowAvatar);
+                photoData.put("userid", UserInfo.getInstance().getUserid());
+                photoData.put("type", Integer.toString(3));
+                http.upLoadFile("api/file/upload", photoData, callback);
+            }
         }
     }
-    private String getImagePath(Uri uri, String selection) {
+    private String getImagePath(Uri uri, String selection, boolean isVideo) {
         String path = null;
         Cursor cursor = requireContext().getContentResolver().query(uri, null, selection, null, null);
         if (cursor != null) {
             if (cursor.moveToFirst()) {
-                int index = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+                int index;
+                if(!isVideo)
+                index = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+                else
+                    index = cursor.getColumnIndex(MediaStore.Video.Media.DATA);
                 // wrong path
                 if (index < 0) return null;
                 path = cursor.getString(index);
