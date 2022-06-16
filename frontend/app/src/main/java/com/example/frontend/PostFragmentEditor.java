@@ -470,7 +470,7 @@ public class PostFragmentEditor extends Fragment {
 
                         intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
                         //设置视频录制的最长时间
-                        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 100);
+                        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 5);
                         //设置视频录制的画质
                         intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
                         startActivityForResult(intent, 0x000104);
