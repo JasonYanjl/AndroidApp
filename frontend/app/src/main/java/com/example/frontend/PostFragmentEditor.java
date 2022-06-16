@@ -367,6 +367,13 @@ public class PostFragmentEditor extends Fragment {
                             .getUserFileAbsolutePath(requireContext(), "Draft/" + draftName);
                     FileManager.getInstance().deleteFile(filepath);
                 }
+                Toast.makeText(getActivity(),
+                        "发送成功",
+                        Toast.LENGTH_SHORT).show();
+                titleEdit.setText("");
+                contentEdit.setText("");
+                Refresh();
+
             }
             if(type == 1){
                 // upload callback

@@ -10,26 +10,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:scaleX="0.95">
+        android:scaleX="0.95"
+        android:scaleY="0.95">
 
         <EditText
             android:id="@+id/textPostTitle"
             android:layout_width="match_parent"
             android:layout_height="80dp"
+            android:autofillHints=""
             android:hint="@string/editor_title"
             android:inputType="text"
-            android:textSize="24sp"
-            android:autofillHints="" />
+            android:textSize="24sp" />
 
         <EditText
             android:id="@+id/textPostContent"
             android:layout_width="match_parent"
             android:layout_height="120dp"
+            android:autofillHints=""
             android:ems="10"
             android:gravity="start|top"
             android:hint="@string/editor_content"
-            android:inputType="textMultiLine"
-            android:autofillHints="" />
+            android:inputType="textMultiLine" />
 
         <TextView
             android:id="@+id/textPosition"

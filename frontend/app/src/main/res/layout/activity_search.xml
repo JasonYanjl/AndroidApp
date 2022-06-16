@@ -33,7 +33,9 @@
                 android:inputType="textPersonName"
                 android:singleLine="true"
                 app:layout_constraintEnd_toStartOf="@id/buttonSearch"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="TouchTargetSizeCheck" />
 
             <Button
                 android:id="@+id/buttonSearch"

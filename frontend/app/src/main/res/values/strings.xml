@@ -12,4 +12,5 @@
     <string name="main_aboutstring">\@移动应用小组</string>
     <string name="editor_title">标题</string>
     <string name="editor_content">内容</string>
+    <string name="main_registertitle">| 注册</string>
 </resources>
