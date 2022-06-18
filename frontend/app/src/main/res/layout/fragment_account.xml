@@ -95,6 +95,7 @@
         android:layout_marginBottom="70dp"
         android:clickable="true"
         app:srcCompat="@drawable/ic_baseline_notifications_24"
-        app:tint="#F44336" />
+        android:backgroundTint="#E6E6FA"
+        app:tint="#DA70D6" />
 
 </FrameLayout>

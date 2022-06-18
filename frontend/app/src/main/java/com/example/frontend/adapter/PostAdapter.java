@@ -548,7 +548,8 @@ public class PostAdapter extends
                     String mimeType = "text/plain";
                     String txt = "标题："+tmpInfo.Title + "\n"
                             + "正文：" + tmpInfo.Text + "\n"
-                            + "发表时间：" + tmpInfo.Time + "\n";
+                            + "发表时间：" + tmpInfo.Time + "\n"
+                            + "来自：校园动态APP";
                     ShareCompat.IntentBuilder
                             .from((Activity) context)
                             .setType(mimeType)
