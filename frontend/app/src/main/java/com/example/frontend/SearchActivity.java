@@ -52,7 +52,7 @@ public class SearchActivity extends AppCompatActivity {
             if (type == 15) {
                 JSONArray nowList = JSON.parseObject(result.toString()).getJSONArray("list");
                 LinkedList<PostInfo> postInfoLinkedList = new LinkedList<>();
-                for(int i=0;i<nowList.size();i++) {
+                for(int i = 0; i < nowList.size(); i++) {
                     JSONObject tmpInfo = nowList.getJSONObject(i);
                     postInfoLinkedList.addLast(new PostInfo(tmpInfo.getInteger("postid"),
                             tmpInfo.getInteger("userid"),

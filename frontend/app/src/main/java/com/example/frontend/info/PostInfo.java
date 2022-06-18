@@ -11,16 +11,13 @@ public class PostInfo {
     public String Title, Text, Location, Time;
 
     public Boolean catchLike, catchComment;
-
     public LinkedList<LikeInfo> Like;
-
     public LinkedList<CommentInfo> Comment;
 
 
     public PostInfo(Integer postid, Integer userid, String username, Integer avatarid, String avatarFilename,
                     String intro, Integer fileid, String filename, String Title, String Text, Integer Type,
-                         String Time, String Location,
-                         Integer isSubscribe, Integer isBlock) {
+                         String Time, String Location, Integer isSubscribe, Integer isBlock) {
         this.postid = postid;
         this.userid = userid;
         this.username = username;
@@ -43,10 +40,10 @@ public class PostInfo {
     }
 
     public String LikeList2String(){
-        String ret = "";
-        for(int i=0;i<Like.size();i++) {
-            if (ret.equals("")) ret = Like.get(i).username;
-            else ret = ret.concat(","+ Like.get(i).username);
+        String ret = " ";
+        for(int i = 0; i < Like.size(); i++) {
+            if (ret.equals(" ")) ret = ret.concat(Like.get(i).username);
+            else ret = ret.concat(", " + Like.get(i).username);
         }
         return ret;
     }

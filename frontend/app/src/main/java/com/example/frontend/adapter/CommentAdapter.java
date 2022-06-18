@@ -75,7 +75,7 @@ public class CommentAdapter extends
             if (type==1) {
                 JSONObject res = JSON.parseObject(result.toString());
                 Integer tmpCommentid = res.getInteger("commentid");
-                for(int i=0;i<mComment.size();i++) {
+                for(int i = 0; i < mComment.size(); i++) {
                     if (mComment.get(i).commentid.equals(tmpCommentid)) {
                         mComment.remove(i);
                         break;

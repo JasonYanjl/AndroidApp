@@ -168,10 +168,10 @@ public class PostAdapter extends
             if (type == 1) {
                 notifyDataSetChanged();
             }
-            else if (type==2) {
+            else if (type == 2) {
                 JSONObject res = JSON.parseObject(result.toString());
                 Integer subscriberid = res.getInteger("subscriberid");
-                for(int i=0;i<mPost.size();i++) {
+                for(int i = 0; i < mPost.size(); i++) {
                     if (mPost.get(i).userid.equals(subscriberid)) {
                         mPost.get(i).isSubscribe = 0;
                         PostData.get(i).isSubscribe = 0;
@@ -179,10 +179,10 @@ public class PostAdapter extends
                 }
                 notifyDataSetChanged();
             }
-            else if (type==3) {
+            else if (type == 3) {
                 JSONObject res = JSON.parseObject(result.toString());
                 Integer subscriberid = res.getInteger("subscriberid");
-                for(int i=0;i<mPost.size();i++) {
+                for(int i = 0; i < mPost.size(); i++) {
                     if (mPost.get(i).userid.equals(subscriberid)) {
                         mPost.get(i).isSubscribe = 1;
                         PostData.get(i).isSubscribe = 1;
@@ -190,10 +190,10 @@ public class PostAdapter extends
                 }
                 notifyDataSetChanged();
             }
-            else if (type==4) {
+            else if (type == 4) {
                 JSONObject res = JSON.parseObject(result.toString());
                 Integer blockerid = res.getInteger("blockerid");
-                for(int i=0;i<mPost.size();i++) {
+                for(int i = 0; i < mPost.size(); i++) {
                     if (mPost.get(i).userid.equals(blockerid)) {
                         mPost.get(i).isBlock = 0;
                         PostData.get(i).isBlock = 0;
@@ -201,10 +201,10 @@ public class PostAdapter extends
                 }
                 notifyDataSetChanged();
             }
-            else if (type==5) {
+            else if (type == 5) {
                 JSONObject res = JSON.parseObject(result.toString());
                 Integer blockerid = res.getInteger("blockerid");
-                for(int i=0;i<mPost.size();i++) {
+                for(int i = 0; i < mPost.size(); i++) {
                     if (mPost.get(i).userid.equals(blockerid)) {
                         mPost.get(i).isBlock = 1;
                         PostData.get(i).isBlock = 1;
@@ -212,16 +212,16 @@ public class PostAdapter extends
                 }
                 notifyDataSetChanged();
             }
-            else if (type==6) {
+            else if (type == 6) {
                 JSONObject res = JSON.parseObject(result.toString());
                 Integer tmpPostID = res.getInteger("postid");
                 JSONArray tmpArray = res.getJSONArray("list");
                 LinkedList<LikeInfo> tmpLike = new LinkedList<LikeInfo>();
-                for(int i=0;i<tmpArray.size();i++) {
+                for(int i = 0; i < tmpArray.size(); i++) {
                     tmpLike.addLast(new LikeInfo(tmpArray.getJSONObject(i).getInteger("userid"),
                             tmpArray.getJSONObject(i).getString("username")));
                 }
-                for(int i=0;i<mPost.size();i++) {
+                for(int i = 0; i < mPost.size(); i++) {
                     if (mPost.get(i).postid.equals(tmpPostID)) {
                         mPost.get(i).catchLike = true;
                         mPost.get(i).Like = tmpLike;
@@ -231,10 +231,10 @@ public class PostAdapter extends
                 }
                 notifyDataSetChanged();
             }
-            else if (type==7) {
+            else if (type == 7) {
                 JSONObject res = JSON.parseObject(result.toString());
                 Integer tmpPostID = res.getInteger("postid");
-                for(int i=0;i<mPost.size();i++) {
+                for(int i = 0; i < mPost.size(); i++) {
                     if (mPost.get(i).postid.equals(tmpPostID)) {
                         mPost.get(i).catchLike = false;
                         PostData.get(i).catchLike = false;
@@ -242,10 +242,10 @@ public class PostAdapter extends
                 }
                 notifyDataSetChanged();
             }
-            else if (type==8) {
+            else if (type == 8) {
                 JSONObject res = JSON.parseObject(result.toString());
                 Integer tmpPostID = res.getInteger("postid");
-                for(int i=0;i<mPost.size();i++) {
+                for(int i = 0; i < mPost.size(); i++) {
                     if (mPost.get(i).postid.equals(tmpPostID)) {
                         mPost.get(i).catchLike = false;
                         PostData.get(i).catchLike = false;
@@ -253,12 +253,12 @@ public class PostAdapter extends
                 }
                 notifyDataSetChanged();
             }
-            else if (type==9) {
+            else if (type == 9) {
                 JSONObject res = JSON.parseObject(result.toString());
                 Integer tmpPostID = res.getInteger("postid");
                 JSONArray tmpArray = res.getJSONArray("list");
                 LinkedList<CommentInfo> tmpComment = new LinkedList<CommentInfo>();
-                for(int i=0;i<tmpArray.size();i++) {
+                for(int i = 0; i < tmpArray.size(); i++) {
                     JSONObject tmpObject = tmpArray.getJSONObject(i);
                     tmpComment.addLast(new CommentInfo(tmpObject.getInteger("userid"),
                             tmpObject.getString("username"),
@@ -268,7 +268,7 @@ public class PostAdapter extends
                             tmpObject.getString("text"),
                             tmpObject.getString("time")));
                 }
-                for(int i=0;i<mPost.size();i++) {
+                for(int i = 0; i < mPost.size(); i++) {
                     if (mPost.get(i).postid.equals(tmpPostID)) {
                         mPost.get(i).catchComment = true;
                         mPost.get(i).Comment = tmpComment;
@@ -278,10 +278,10 @@ public class PostAdapter extends
                 }
                 notifyDataSetChanged();
             }
-            else if (type==10) {
+            else if (type == 10) {
                 JSONObject res = JSON.parseObject(result.toString());
                 Integer tmpPostID = res.getInteger("postid");
-                for(int i=0;i<mPost.size();i++) {
+                for(int i = 0; i < mPost.size(); i++) {
                     if (mPost.get(i).postid.equals(tmpPostID)) {
                         mPost.get(i).catchComment = false;
                         PostData.get(i).catchComment = false;
@@ -289,7 +289,7 @@ public class PostAdapter extends
                 }
                 notifyDataSetChanged();
             }
-            else if (type==11) {
+            else if (type == 11) {
                 notifyDataSetChanged();
             }
             Log.i("PostAdapter---",result.toString());
@@ -384,7 +384,7 @@ public class PostAdapter extends
                 tmpPostTextViewHolder.AvatarImageView.setImageResource(R.drawable.ic_avatar);
             }
             else {
-                String fileAbsPath =  FileManager.getInstance().getUserFileAbsolutePath(context, "avatar")
+                String fileAbsPath = FileManager.getInstance().getUserFileAbsolutePath(context, "avatar")
                         + "/" + tmpInfo.avatarFilename;
                 if (FileManager.getInstance().getUserFileExists(context, "avatar" + "/" + tmpInfo.avatarFilename)) {
                     // set avatar
@@ -400,6 +400,17 @@ public class PostAdapter extends
                     tmpPostTextViewHolder.AvatarImageView.setImageResource(R.drawable.ic_avatar);
                 }
             }
+            tmpPostTextViewHolder.AvatarImageView.setOnClickListener(new TextView.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, AccountActivity.class);
+                    intent.putExtra("userid", tmpInfo.userid);
+                    intent.putExtra("username", tmpInfo.username);
+                    intent.putExtra("avatarid", tmpInfo.avatarid);
+                    intent.putExtra("intro", tmpInfo.intro);
+                    context.startActivity(intent);
+                }
+            });
             //username
             tmpPostTextViewHolder.UsernameItemView.setText(tmpInfo.username);
             tmpPostTextViewHolder.UsernameItemView.setOnClickListener(new TextView.OnClickListener(){
@@ -477,7 +488,7 @@ public class PostAdapter extends
                     }
                 });
             }
-            //location
+            // location
             if (tmpInfo.Location.equals("")) {
                 tmpPostTextViewHolder.LocationItemView.setVisibility(View.GONE);
             }
@@ -541,7 +552,7 @@ public class PostAdapter extends
                     }
                 });
             }
-            //ShareButton
+            // ShareButton
             tmpPostTextViewHolder.ShareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -558,7 +569,7 @@ public class PostAdapter extends
                             .startChooser();
                 }
             });
-            //CommmentButton
+            // CommmentButton
             tmpPostTextViewHolder.CommmentButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -580,7 +591,7 @@ public class PostAdapter extends
                     builder.show();
                 }
             });
-            //Comment
+            // Comment
             if (tmpInfo.catchComment.equals(false)) {
                 HttpRequestManager http = HttpRequestManager.getInstance(context);
                 MyCallBack callBack = new MyCallBack(9);
@@ -588,7 +599,7 @@ public class PostAdapter extends
                 data.put("postid", Integer.toString(tmpInfo.postid));
                 http.requestAsyn("api/discover/collectcomment",0, data, callBack);
             }
-            if (tmpInfo.Comment.size()==0) {
+            if (tmpInfo.Comment.size() == 0) {
                 tmpPostTextViewHolder.CommentRecyclerView.setVisibility(View.GONE);
             }
             else {
@@ -597,7 +608,7 @@ public class PostAdapter extends
                 tmpPostTextViewHolder.CommentRecyclerView.setAdapter(tmpPostTextViewHolder.commentAdapter);
                 tmpPostTextViewHolder.CommentRecyclerView.setLayoutManager(new LinearLayoutManager(context));
             }
-            //image
+            // image
             if (mPost.get(position).Type.equals(ITEM_TYPE0)) {
                 tmpPostTextViewHolder.ImageViewImage.setVisibility(View.GONE);
             }
@@ -777,7 +788,7 @@ public class PostAdapter extends
     }
 
     public boolean checkUserInLike(Integer Userid, LinkedList<LikeInfo> tmpLike) {
-        for(int i=0;i<tmpLike.size();i++) {
+        for(int i = 0; i < tmpLike.size(); i++) {
             if (tmpLike.get(i).userid.equals(Userid)) return true;
         }
         return false;

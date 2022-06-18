@@ -52,7 +52,7 @@ public class TabRelationFragment extends Fragment {
             if (type == 1) {
                 JSONArray nowList = JSON.parseObject(result.toString()).getJSONArray("list");
                 LinkedList<RelationInfo> relationInfoLinkedList = new LinkedList<>();
-                for(int i=0;i<nowList.size();i++) {
+                for(int i = 0; i < nowList.size(); i++) {
                     JSONObject tmpInfo = nowList.getJSONObject(i);
                     relationInfoLinkedList.addLast(new RelationInfo(tmpInfo.getInteger("userid"),
                             tmpInfo.getString("username"),

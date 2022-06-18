@@ -121,7 +121,7 @@ public class RelationAdapter extends
             else if (type==2) {
                 JSONObject res = JSON.parseObject(result.toString());
                 Integer subscriberid = res.getInteger("subscriberid");
-                for(int i=0;i<mRelation.size();i++) {
+                for(int i = 0; i < mRelation.size(); i++) {
                     if (mRelation.get(i).userid.equals(subscriberid)) {
                         mRelation.get(i).isSubscribe = 0;
                         relationData.get(i).isSubscribe = 0;
@@ -132,7 +132,7 @@ public class RelationAdapter extends
             else if (type==3) {
                 JSONObject res = JSON.parseObject(result.toString());
                 Integer subscriberid = res.getInteger("subscriberid");
-                for(int i=0;i<mRelation.size();i++) {
+                for(int i = 0; i < mRelation.size(); i++) {
                     if (mRelation.get(i).userid.equals(subscriberid)) {
                         mRelation.get(i).isSubscribe = 1;
                         relationData.get(i).isSubscribe = 1;
@@ -143,7 +143,7 @@ public class RelationAdapter extends
             else if (type==4) {
                 JSONObject res = JSON.parseObject(result.toString());
                 Integer blockerid = res.getInteger("blockerid");
-                for(int i=0;i<mRelation.size();i++) {
+                for(int i = 0; i < mRelation.size(); i++) {
                     if (mRelation.get(i).userid.equals(blockerid)) {
                         mRelation.get(i).isBlock = 0;
                         relationData.get(i).isBlock = 0;
@@ -154,7 +154,7 @@ public class RelationAdapter extends
             else if (type==5) {
                 JSONObject res = JSON.parseObject(result.toString());
                 Integer blockerid = res.getInteger("blockerid");
-                for(int i=0;i<mRelation.size();i++) {
+                for(int i = 0; i < mRelation.size(); i++) {
                     if (mRelation.get(i).userid.equals(blockerid)) {
                         mRelation.get(i).isBlock = 1;
                         relationData.get(i).isBlock = 1;
