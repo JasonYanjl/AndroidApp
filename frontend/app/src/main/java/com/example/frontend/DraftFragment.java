@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.frontend.placeholder.PlaceholderContent;
 import com.example.frontend.utils.FileManager;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +45,13 @@ public class DraftFragment extends Fragment {
     @BindView(R.id.draft_list)
     protected RecyclerView recyclerView;
     private List<String> drafts;
+    private List<String> title;
+    private List<String> text;
+    final static String DRAFT_TITLE = "DRAFT_TITLE_POST_EDITOR";
+    final static String DRAFT_CONTENT = "DRAFT_CONTENT_POST_EDITOR";
+    final static String DRAFT_FILEID = "DRAFT_FILEID_POST_EDITOR";
+    final static String DRAFT_POSTTYPE = "DRAFT_POSTTYPE_POST_EDITOR";
+    final static String DRAFT_LOCATION = "DRAFT_LOCATION";
 
     public void myItemClick(View view){
         // 获取itemView的位置
@@ -50,11 +63,14 @@ public class DraftFragment extends Fragment {
 
     public class TestRecycleViewAdapter extends RecyclerView.Adapter<TestRecycleViewAdapter.ViewHolderA> {
         private Context mContext;
-        private List<String> mList;
+        private List<String> mList, mTitle, mText;
 
-        public TestRecycleViewAdapter(Context context, List<String> list) {
+        public TestRecycleViewAdapter(Context context, List<String> list,  List<String> title,
+                                      List<String> text) {
             mContext = context;
             mList = list;
+            mTitle = title;
+            mText = text;
         }
 
         @Override
@@ -66,7 +82,9 @@ public class DraftFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolderA holder, int position) {
-            holder.mTextView.setText(mList.get(position)+"的草稿");
+            holder.mTextView.setText(mList.get(position)+"的草稿"+"\n"+
+                    "标题："+mTitle.get(position) + "\n" +
+                    "内容："+mText.get(position));
         }
 
         @Override
@@ -122,18 +140,78 @@ public class DraftFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new TestRecycleViewAdapter(requireContext(),drafts));
+            recyclerView.setAdapter(new TestRecycleViewAdapter(requireContext(),drafts,title,text));
         }
         return view;
     }
-    void initData(){
-        drafts=new ArrayList<>();
+    public List<String> readTitleText(String filepath) {
+        List<String> res = new ArrayList<>();
+        FileInputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(new File(filepath));
+            Reader reader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(reader);
+            StringBuilder ret = new StringBuilder();
+            String temp;
+            while(null !=(temp = bufferedReader.readLine())){
+                Log.i("***APPDEND***",temp);
+                ret.append(temp);
+            }
+            JSONObject newdata= JSONObject.parseObject(ret.toString());
+            Log.i("*****READ*****PATH=",filepath);
+            if(newdata!=null) {
+                Log.i("*****READ*****",newdata.toString());
+                String titleStr = newdata.getString(DRAFT_TITLE);
+                String contentStr = newdata.getString(DRAFT_CONTENT);
+                res.add(titleStr);
+                res.add(contentStr);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(inputStream != null){
+                try {
+                    inputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return res;
+    }
+    void initData() {
+        drafts = new ArrayList<>();
+        title = new ArrayList<>();
+        text = new ArrayList<>();
 
         String filepath = FileManager.getInstance()
                 .getUserFileAbsolutePath(requireContext(), "Draft/");
         drafts.add("自动保存");
-        for(String title : getAllFiles(filepath))
-            drafts.add(title);
+
+        String autofilepath = FileManager.getInstance()
+                .getUserFileAbsolutePath(requireContext(), "Draftcache");
+        List<String> tmpres = readTitleText(autofilepath);
+        if (tmpres.size() >= 2) {
+            title.add(tmpres.get(0));
+            text.add(tmpres.get(1));
+        } else {
+            title.add("");
+            text.add("");
+        }
+
+        for (String filename : getAllFiles(filepath)) {
+            drafts.add(filename);
+            autofilepath = FileManager.getInstance()
+                    .getUserFileAbsolutePath(requireContext(), "Draft/"+filename);
+            tmpres = readTitleText(autofilepath);
+            if (tmpres.size() >= 2) {
+                title.add(tmpres.get(0));
+                text.add(tmpres.get(1));
+            } else {
+                title.add("");
+                text.add("");
+            }
+        }
     }
 
     public static List<String> getAllFiles(String dirPath) {
