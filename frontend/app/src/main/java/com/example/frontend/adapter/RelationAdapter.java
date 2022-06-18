@@ -327,6 +327,17 @@ public class RelationAdapter extends
                     tmpRelationViewHolder.AvatarImageView.setImageResource(R.drawable.ic_avatar);
                 }
             }
+            tmpRelationViewHolder.AvatarImageView.setOnClickListener(new TextView.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, AccountActivity.class);
+                    intent.putExtra("userid", tmpInfo.userid);
+                    intent.putExtra("username", tmpInfo.username);
+                    intent.putExtra("avatarid", tmpInfo.avatarid);
+                    intent.putExtra("intro", tmpInfo.intro);
+                    context.startActivity(intent);
+                }
+            });
         }
         else if (holder instanceof ExpandViewHolder) {
             ExpandViewHolder tmpExpandViewHolder = (ExpandViewHolder) holder;
